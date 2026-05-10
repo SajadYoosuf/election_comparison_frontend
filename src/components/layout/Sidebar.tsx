@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { cn } from "@/components/ui/Card";
-import { 
-  LayoutDashboard, 
-  User, 
-  Map as MapIcon, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  User,
+  Map as MapIcon,
+  BarChart3,
   GitCompare,
   ChevronLeft,
   ChevronRight
@@ -34,7 +34,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const sections = ["Main", "Explore", "Analysis"];
 
   return (
-    <aside 
+    <aside
       className={cn(
         "h-screen bg-[#0D1117] border-r border-white/5 flex flex-col fixed left-0 top-0 z-30 transition-all duration-300",
         isOpen ? "w-64" : "w-20"
@@ -43,9 +43,9 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       <div className={cn("flex flex-col pt-6 pb-4 border-b border-white/5", isOpen ? "px-5" : "px-4 items-center")}>
         <div className="flex items-center justify-between">
           <div className={cn("font-bold text-white transition-all whitespace-nowrap", isOpen ? "text-sm" : "text-[0px] opacity-0")}>
-            Kerala Elections
+            Kerala Election Comparison
           </div>
-          <button 
+          <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-1.5 rounded-lg text-[#8B949E] hover:text-white hover:bg-white/5 transition-colors"
           >
@@ -58,7 +58,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </div>
         )}
       </div>
-      
+
       <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto custom-scrollbar">
         {sections.map(sectionName => (
           <div key={sectionName} className="space-y-1">
@@ -76,8 +76,8 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   className={cn(
                     "flex items-center rounded-lg transition-all text-[12px] font-medium",
                     isOpen ? "gap-3 px-3 py-2" : "justify-center py-3",
-                    isActive 
-                      ? "bg-[#3b82f6]/20 text-[#93c5fd]" 
+                    isActive
+                      ? "bg-[#3b82f6]/20 text-[#93c5fd]"
                       : "text-white/50 hover:text-white hover:bg-white/5"
                   )}
                   title={!isOpen ? item.name : undefined}

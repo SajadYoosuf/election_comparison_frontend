@@ -13,14 +13,36 @@ import {
    Users,
    ArrowUpRight,
    Play,
-
 } from 'lucide-react';
+import { ResultsModal } from '@/components/modals/ResultsModal';
 
 export default function LandingPage() {
+   const [language, setLanguage] = React.useState<'EN' | 'ML'>('EN');
+   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+   const content = {
+      EN: {
+         title: "60 Years of",
+         accent: "Kerala Politics",
+         sub: "A comprehensive data archive of every assembly election from 1957 to the 2026 projections. Explore the trends that shaped the cradle of Indian literacy.",
+         start: "Start Exploring",
+         results: "View 2026 Results"
+      },
+      ML: {
+         title: "60 വർഷത്തെ",
+         accent: "കേരള രാഷ്ട്രീയം",
+         sub: "1957 മുതൽ 2026 വരെയുള്ള എല്ലാ നിയമസഭാ തിരഞ്ഞെടുപ്പുകളുടെയും സമഗ്രമായ വിവരശേഖരം. കേരളത്തിന്റെ രാഷ്ട്രീയ ചരിത്രം പര്യവേക്ഷണം ചെയ്യുക.",
+         start: "പര്യവേക്ഷണം തുടങ്ങുക",
+         results: "2026 ഫലങ്ങൾ"
+      }
+   };
+
+   const t = content[language];
+
    return (
       <div className="min-h-screen bg-[#08090a] text-white selection:bg-[#4ae176]/30">
          <Head>
-            <title>Kerala Election Archive — 60 Years of History</title>
+            <title>Kerala Election Comparison — 60 Years of History</title>
             <meta name="description" content="Explore seven decades of legislative evolution in Kerala." />
          </Head>
 
@@ -30,33 +52,33 @@ export default function LandingPage() {
                <div className="w-8 h-8 bg-white/10 rounded flex items-center justify-center border border-white/10">
                   <div className="w-4 h-4 border-2 border-white/40 rounded-sm" />
                </div>
-               <span className="font-bold text-sm tracking-tight">Kerala Election Archive</span>
+               <span className="font-bold text-sm tracking-tight">Kerala Election Comparison</span>
             </div>
             <div className="flex items-center gap-6">
-               <button className="flex items-center gap-2 text-xs font-bold text-white/60 hover:text-white transition-colors">
-                  <Globe className="w-3.5 h-3.5" /> ENGLISH
+               <button
+                  onClick={() => setLanguage(language === 'EN' ? 'ML' : 'EN')}
+                  className="flex items-center gap-2 text-xs font-bold text-[#4ae176] hover:text-white transition-all bg-[#4ae176]/10 px-3 py-1.5 rounded-lg border border-[#4ae176]/20"
+               >
+                  <Globe className="w-3.5 h-3.5" /> {language === 'EN' ? 'മലയാളം' : 'ENGLISH'}
                </button>
-               <div className="flex items-center gap-4 border-l border-white/10 pl-6">
-                  <Bell className="w-4 h-4 text-white/40 cursor-pointer hover:text-white transition-colors" />
-                  <div className="w-7 h-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
-                     <User className="w-3.5 h-3.5 text-white/60" />
-                  </div>
-               </div>
             </div>
          </nav>
 
          {/* Hero Section */}
-         <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+         <section className="relative pt-32 pb-24 px-6 overflow-hidden min-h-[80vh] flex items-center justify-center">
             {/* Background Map Overlay */}
             <div
-               className="absolute inset-0 opacity-[0.03] pointer-events-none grayscale invert"
+               className="absolute inset-0 opacity-[0.8] pointer-events-none"
                style={{
-                  backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/c/cb/Kerala_locator_map.svg")',
-                  backgroundSize: '40%',
+                  backgroundImage: 'url("/kerala-map-bg.png")',
+                  backgroundSize: 'cover',
                   backgroundPosition: 'center 20%',
                   backgroundRepeat: 'no-repeat'
                }}
             />
+            {/* Dark Radial Mask for Text Readability */}
+            <div className="absolute inset-0 bg-[#08090a]/40 backdrop-blur-[2px] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#08090a_70%)] pointer-events-none" />
 
             <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4ae176]/10 border border-[#4ae176]/20 text-[#4ae176] text-[9px] font-bold uppercase tracking-widest">
@@ -65,23 +87,25 @@ export default function LandingPage() {
                </div>
 
                <h1 className="text-[64px] font-extrabold leading-[1.05] tracking-tight">
-                  60 Years of <br />
-                  <span className="text-[#4ae176]">Kerala Politics</span>
+                  {t.title} <br />
+                  <span className="text-[#4ae176]">{t.accent}</span>
                </h1>
 
                <p className="text-white/40 text-lg max-w-2xl mx-auto leading-relaxed">
-                  A comprehensive data archive of every assembly election from 1957 to the
-                  2026 projections. Explore the trends that shaped the cradle of Indian literacy.
+                  {t.sub}
                </p>
 
                <div className="flex items-center justify-center gap-4 pt-4">
                   <Link href="/overview">
                      <button className="px-8 py-3.5 bg-white text-black font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-white/90 transition-all shadow-xl shadow-white/5">
-                        Start Exploring <ArrowUpRight className="w-4 h-4" />
+                        {t.start} <ArrowUpRight className="w-4 h-4" />
                      </button>
                   </Link>
-                  <button className="px-8 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-white/10 transition-all">
-                     View 2026 Results <MapIcon className="w-4 h-4 opacity-40" />
+                  <button
+                     onClick={() => setIsModalOpen(true)}
+                     className="px-8 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-white/10 transition-all"
+                  >
+                     {t.results} <MapIcon className="w-4 h-4 opacity-40" />
                   </button>
                </div>
             </div>
@@ -95,17 +119,17 @@ export default function LandingPage() {
                   <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mt-1">Elections</span>
                </div>
 
-               <div className="flex-1 max-w-xl h-10 bg-black/40 border border-white/5 rounded-xl px-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                     <History className="w-3.5 h-3.5" /> Timeline
+               <div className="flex-1 max-w-2xl h-14 bg-black/40 border border-white/5 rounded-2xl px-6 flex items-center justify-between shadow-inner">
+                  <div className="flex items-center gap-3 text-xs font-bold text-white/40 uppercase tracking-[0.2em]">
+                     <History className="w-4 h-4" /> Timeline
                   </div>
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-8">
                      {[1957, 1980, 2001, 2016, 2021, 2026].map(year => (
-                        <span key={year} className={`text-[10px] font-bold ${year === 2021 ? 'text-[#4ae176]' : 'text-white/20'}`}>{year}</span>
+                        <span key={year} className={`text-xs font-bold transition-all duration-500 ${year === 2026 ? 'text-[#4ae176] scale-125' : 'text-white/20 hover:text-white/40'}`}>{year}</span>
                      ))}
                   </div>
-                  <div className="w-6 h-6 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
-                     <Play className="w-2.5 h-2.5 text-white/40 fill-current" />
+                  <div className="w-8 h-8 rounded-xl bg-[#4ae176]/10 border border-[#4ae176]/20 flex items-center justify-center">
+                     <Play className="w-3 h-3 text-[#4ae176] fill-current" />
                   </div>
                </div>
 
@@ -167,21 +191,7 @@ export default function LandingPage() {
                   </div>
                </div>
 
-               <div className="lg:col-span-3 h-64 bg-white/[0.02] border border-white/5 rounded-2xl flex relative overflow-hidden group hover:bg-white/[0.04] transition-all">
-                  <div className="w-1/2 p-10 flex flex-col justify-center space-y-4">
-                     <h3 className="text-2xl font-extrabold tracking-tight">The Political Map</h3>
-                     <p className="text-sm text-white/40 max-w-xs">
-                        Live interactive preview of constituency-level shifts over time.
-                     </p>
-                     <button className="w-fit px-5 py-2.5 border border-[#4ae176]/30 text-[#4ae176] text-[11px] font-bold rounded-lg hover:bg-[#4ae176]/10 transition-all">
-                        Launch Interactive Map
-                     </button>
-                  </div>
-                  <div className="w-1/2 bg-gradient-to-l from-[#4ae176]/10 to-transparent flex items-center justify-center">
-                     <div className="w-full h-full opacity-20 group-hover:scale-105 transition-transform duration-1000"
-                        style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/c/cb/Kerala_locator_map.svg")', backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
-                  </div>
-               </div>
+
             </div>
          </section>
 
@@ -202,14 +212,14 @@ export default function LandingPage() {
          </section>
 
          {/* Footer */}
-         <footer className="max-w-6xl mx-auto px-6 pb-20 pt-10 border-t border-white/5">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+         <footer className="w-full px-8 pb-20 pt-10 border-t border-white/5 bg-black/20">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-12 max-w-7xl mx-auto">
                <div className="space-y-6 max-w-sm">
                   <div className="flex items-center gap-3">
                      <div className="w-6 h-6 border-2 border-[#4ae176] rounded flex items-center justify-center">
                         <div className="w-2 h-2 bg-[#4ae176]" />
                      </div>
-                     <span className="font-bold text-sm">ElectionHub Kerala</span>
+                     <span className="font-bold text-sm">Kerala Election Comparison</span>
                   </div>
                   <p className="text-[11px] text-white/40 leading-relaxed">
                      An open-source initiative to preserve and visualize the democratic history of Kerala.
@@ -221,20 +231,21 @@ export default function LandingPage() {
                   <div className="flex items-center gap-6 text-[10px] font-bold text-white/40 uppercase tracking-widest">
                      <a href="#" className="hover:text-white transition-colors">Documentation</a>
                      <a href="#" className="hover:text-white transition-colors">API Access</a>
-                     <a href="#" className="hover:text-white transition-colors flex items-center gap-1.5">
-                     </a>
                   </div>
                   <div className="space-y-1">
                      <p className="text-[10px] font-bold text-white/60 uppercase tracking-tighter">
-                        Curated and Maintained by <span className="text-white">Sajjad Yoosuf</span>
-                     </p>
-                     <p className="text-[9px] text-white/20 uppercase tracking-widest">
-                        Released under MIT License © 2024
+                        Curated and Maintained by <span className="text-white">Sajad Yoosuf</span>
                      </p>
                   </div>
                </div>
             </div>
          </footer>
+
+         <ResultsModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            year={2026}
+         />
       </div>
    );
 }
