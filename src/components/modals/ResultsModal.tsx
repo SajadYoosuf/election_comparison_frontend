@@ -16,6 +16,7 @@ export function ResultsModal({ isOpen, onClose, year }: ResultsModalProps) {
    const [selectedId, setSelectedId] = useState<string | null>(null);
    const [allCandidates, setAllCandidates] = useState<any[]>([]);
    const [loadingCandidates, setLoadingCandidates] = useState(false);
+   const [searchQuery, setSearchQuery] = useState('');
    const [error, setError] = useState<string | null>(null);
 
    useEffect(() => {
@@ -32,19 +33,19 @@ export function ResultsModal({ isOpen, onClose, year }: ResultsModalProps) {
             .catch(err => {
                setError("Backend connection failed. Displaying simulated 2026 data.");
                const mockResults = [
-                  { id: 1, name: "Thiruvananthapuram", winner: "Antony Raju", party: "LDF", votes: "48,200", margin: "+2.1%", alliance: "LDF", lead: 4200, runners: [{ name: "S. Suresh", party: "NDA", votes: "44,000" }] },
-                  { id: 2, name: "Nemom", winner: "V. Sivankutty", party: "LDF", votes: "52,400", margin: "+1.8%", alliance: "LDF", lead: 3800, runners: [{ name: "Kummanam Rajasekharan", party: "NDA", votes: "48,600" }] },
-                  { id: 3, name: "Vattiyoorkavu", winner: "V.K. Prasanth", party: "LDF", votes: "46,900", margin: "+3.4%", alliance: "LDF", lead: 7100, runners: [{ name: "Veena S. Nair", party: "UDF", votes: "39,800" }] },
-                  { id: 4, name: "Kazhakoottam", winner: "Kadakampally Surendran", party: "LDF", votes: "50,100", margin: "+1.2%", alliance: "LDF", lead: 2300, runners: [{ name: "Shobha Surendran", party: "NDA", votes: "47,800" }] },
-                  { id: 5, name: "Kovalam", winner: "M. Vincent", party: "UDF", votes: "47,300", margin: "+0.9%", alliance: "UDF", lead: 1200, runners: [{ name: "Neelalohithadasan Nadar", party: "LDF", votes: "46,100" }] },
-                  { id: 6, name: "Neyyattinkara", winner: "K. Ansalan", party: "LDF", votes: "49,800", margin: "+4.1%", alliance: "LDF", lead: 8500, runners: [{ name: "Ansajitha Ressal", party: "UDF", votes: "41,300" }] },
-                  { id: 7, name: "Aruvikkara", winner: "G. Stephen", party: "LDF", votes: "45,200", margin: "+1.5%", alliance: "LDF", lead: 3100, runners: [{ name: "K.S. Sabarinadhan", party: "UDF", votes: "42,100" }] },
-                  { id: 8, name: "Parassala", winner: "C.K. Hareendran", party: "LDF", votes: "51,600", margin: "+2.8%", alliance: "LDF", lead: 6200, runners: [{ name: "Ansajitha Ressal", party: "UDF", votes: "45,400" }] },
-                  { id: 9, name: "Kattakada", winner: "I.B. Satheesh", party: "LDF", votes: "48,900", margin: "+2.3%", alliance: "LDF", lead: 5400, runners: [{ name: "Malayinkeezhu Venugopal", party: "UDF", votes: "43,500" }] },
-                  { id: 10, name: "Chirayinkeezhu", winner: "V. Sasi", party: "LDF", votes: "44,100", margin: "+3.7%", alliance: "LDF", lead: 9200, runners: [{ name: "B.S. Anoop", party: "UDF", votes: "34,900" }] }
+                  { id: "sim-1", name: "Thiruvananthapuram", winner: "Antony Raju", party: "LDF", votes: "48,200", margin: "+2.1%", alliance: "LDF", lead: 4200, runners: [{ name: "S. Suresh", party: "NDA", votes: "44,000" }] },
+                  { id: "sim-2", name: "Nemom", winner: "V. Sivankutty", party: "LDF", votes: "52,400", margin: "+1.8%", alliance: "LDF", lead: 3800, runners: [{ name: "Kummanam Rajasekharan", party: "NDA", votes: "48,600" }] },
+                  { id: "sim-3", name: "Vattiyoorkavu", winner: "V.K. Prasanth", party: "LDF", votes: "46,900", margin: "+3.4%", alliance: "LDF", lead: 7100, runners: [{ name: "Veena S. Nair", party: "UDF", votes: "39,800" }] },
+                  { id: "sim-4", name: "Kazhakoottam", winner: "Kadakampally Surendran", party: "LDF", votes: "50,100", margin: "+1.2%", alliance: "LDF", lead: 2300, runners: [{ name: "Shobha Surendran", party: "NDA", votes: "47,800" }] },
+                  { id: "sim-5", name: "Kovalam", winner: "M. Vincent", party: "UDF", votes: "47,300", margin: "+0.9%", alliance: "UDF", lead: 1200, runners: [{ name: "Neelalohithadasan Nadar", party: "LDF", votes: "46,100" }] },
+                  { id: "sim-6", name: "Neyyattinkara", winner: "K. Ansalan", party: "LDF", votes: "49,800", margin: "+4.1%", alliance: "LDF", lead: 8500, runners: [{ name: "Ansajitha Ressal", party: "UDF", votes: "41,300" }] },
+                  { id: "sim-7", name: "Aruvikkara", winner: "G. Stephen", party: "LDF", votes: "45,200", margin: "+1.5%", alliance: "LDF", lead: 3100, runners: [{ name: "K.S. Sabarinadhan", party: "UDF", votes: "42,100" }] },
+                  { id: "sim-8", name: "Parassala", winner: "C.K. Hareendran", party: "LDF", votes: "51,600", margin: "+2.8%", alliance: "LDF", lead: 6200, runners: [{ name: "Ansajitha Ressal", party: "UDF", votes: "45,400" }] },
+                  { id: "sim-9", name: "Kattakada", winner: "I.B. Satheesh", party: "LDF", votes: "48,900", margin: "+2.3%", alliance: "LDF", lead: 5400, runners: [{ name: "Malayinkeezhu Venugopal", party: "UDF", votes: "43,500" }] },
+                  { id: "sim-10", name: "Chirayinkeezhu", winner: "V. Sasi", party: "LDF", votes: "44,100", margin: "+3.7%", alliance: "LDF", lead: 9200, runners: [{ name: "B.S. Anoop", party: "UDF", votes: "34,900" }] }
                ];
                setData({ results: mockResults });
-               setSelectedId(1);
+               setSelectedId("sim-1");
             })
             .finally(() => setLoading(false));
       }
@@ -52,7 +53,10 @@ export function ResultsModal({ isOpen, onClose, year }: ResultsModalProps) {
 
    useEffect(() => {
     async function loadCandidates() {
-      if (!selectedId) return;
+      if (!selectedId || typeof selectedId !== 'string' || selectedId.startsWith('sim-')) {
+        setAllCandidates([]);
+        return;
+      }
       setLoadingCandidates(true);
       try {
         const response = await fetchConstituencyCandidates(selectedId);
@@ -108,7 +112,7 @@ export function ResultsModal({ isOpen, onClose, year }: ResultsModalProps) {
                   <div className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-black/20">
 
                      {/* LEFT SIDE: Visual Map */}
-                     <div className="flex-1 relative overflow-hidden flex items-center justify-center">
+                     <div className="flex-1 relative overflow-hidden flex items-center justify-start pl-4 lg:pl-12">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(74,225,118,0.03)_0%,transparent_70%)]" />
 
                         {loading ? (
@@ -123,6 +127,47 @@ export function ResultsModal({ isOpen, onClose, year }: ResultsModalProps) {
                               onSelect={(id) => setSelectedId(id)}
                            />
                         )}
+
+                        {/* Search Overlay */}
+                        <div className="absolute top-10 left-10 w-80 z-20">
+                           <div className="relative group">
+                              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[#4ae176] transition-colors" />
+                              <input 
+                                 type="text"
+                                 placeholder="Search Constituency..."
+                                 value={searchQuery}
+                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                 className="w-full bg-[#161b22]/90 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#4ae176]/50 transition-all backdrop-blur-xl"
+                              />
+                           </div>
+                           
+                           {searchQuery && (
+                              <motion.div 
+                                 initial={{ opacity: 0, y: 10 }}
+                                 animate={{ opacity: 1, y: 0 }}
+                                 className="mt-2 bg-[#161b22]/95 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl max-h-[300px] overflow-y-auto custom-scrollbar shadow-2xl"
+                              >
+                                 {data?.results?.filter((c: any) => 
+                                    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+                                 ).map((c: any) => (
+                                    <button
+                                       key={c.id}
+                                       onClick={() => {
+                                          setSelectedId(c.id);
+                                          setSearchQuery('');
+                                       }}
+                                       className="w-full text-left p-4 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center justify-between group"
+                                    >
+                                       <div>
+                                          <div className="text-sm font-bold text-white group-hover:text-[#4ae176] transition-colors">{c.name}</div>
+                                          <div className="text-[10px] text-white/40 font-medium uppercase tracking-tighter">{c.party} • {c.alliance}</div>
+                                       </div>
+                                       <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-[#4ae176]" />
+                                    </button>
+                                 ))}
+                              </motion.div>
+                           )}
+                        </div>
 
                         {/* Floating Map Legend */}
                         <div className="absolute bottom-10 left-10 flex flex-col gap-4 p-6 bg-[#161b22]/80 border border-white/10 rounded-3xl backdrop-blur-2xl shadow-2xl z-10">

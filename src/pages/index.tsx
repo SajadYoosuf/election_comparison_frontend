@@ -23,7 +23,7 @@ export default function LandingPage() {
    const content = {
       EN: {
          title: "60 Years of",
-         accent: "Kerala Politics",
+         accent: "Kerala Assemply ELection ",
          sub: "A comprehensive data archive of every assembly election from 1957 to the 2026 projections. Explore the trends that shaped the cradle of Indian literacy.",
          start: "Start Exploring",
          results: "View 2026 Results"
@@ -161,9 +161,7 @@ export default function LandingPage() {
                            Extract deep CSV datasets, generate automated swing reports, and cross-reference demographic shifts across six decades with a single click.
                         </p>
                      </div>
-                     <button className="flex items-center gap-2 text-[11px] font-bold text-[#4ae176] pt-4 group-hover:gap-3 transition-all">
-                        Access Data Tools <ArrowRight className="w-3.5 h-3.5" />
-                     </button>
+
                   </div>
 
                   <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all">
