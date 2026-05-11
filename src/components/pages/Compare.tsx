@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   GitCompare, 
   ChevronDown, 
@@ -10,142 +10,375 @@ import {
   BarChart3,
   Calendar,
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  Search,
+  Users,
+  MapPin,
+  User,
+  Zap,
+  ArrowLeftRight,
+  Download,
+  Info,
+  ShieldCheck,
+  Award,
+  Activity,
+  History
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  fetchCompareYears, 
+  fetchCompareConstituencies, 
+  fetchCompareCandidates,
+  searchConstituencies,
+  searchCandidates
+} from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
+
+type CompareMode = 'year-vs-year' | 'constituency-vs-constituency' | 'candidate-vs-candidate';
 
 export function ComparePageContent() {
-  const [yearA, setYearA] = useState(2021);
-  const [yearB, setYearB] = useState(2016);
+  const [mode, setMode] = useState<CompareMode>('year-vs-year');
+  const [loading, setLoading] = useState(false);
+  const [comparisonData, setComparisonData] = useState<any>(null);
+  
+  // Params
+  const [yearA, setYearA] = useState(2016);
+  const [yearB, setYearB] = useState(2021);
+  const [constA, setConstA] = useState("Dharmadam");
+  const [constB, setConstB] = useState("Puthuppally");
+  const [candA, setCandA] = useState("Pinarayi Vijayan");
+  const [candB, setCandB] = useState("Oommen Chandy");
 
   const years = [2021, 2016, 2011, 2006, 2001, 1996, 1991, 1987, 1982, 1977, 1970, 1967, 1965, 1960, 1957];
 
+  const handleCompare = async () => {
+    setLoading(true);
+    try {
+      let data;
+      if (mode === 'year-vs-year') {
+        data = await fetchCompareYears(yearA, yearB);
+      } else if (mode === 'constituency-vs-constituency') {
+        data = await fetchCompareConstituencies(constA, constB);
+      } else {
+        data = await fetchCompareCandidates(candA, candB);
+      }
+      setComparisonData(data);
+    } catch (err) {
+      console.error("Comparison failed", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleCompare();
+  }, [mode]);
+
   return (
-    <div className="flex-1 flex flex-col bg-[#F8FAFC] dark:bg-[#08090a] min-h-screen">
-      {/* Top Bar */}
-      <header className="h-14 border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#0D1117] flex items-center justify-between px-6 sticky top-0 z-20">
+    <div className="flex-1 flex flex-col bg-[#0D1117] text-white min-h-screen font-sans selection:bg-blue-500/30">
+      {/* Header */}
+      <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-50">
         <div className="flex flex-col">
-          <h1 className="text-sm font-semibold text-gray-900 dark:text-white">Side-by-Side Comparison</h1>
-          <span className="text-[11px] text-gray-500 dark:text-white/40 font-normal">Benchmarking electoral cycles across decades</span>
+          <h1 className="text-2xl font-black tracking-tighter text-white">Compare & Benchmark</h1>
+          <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Advanced Electoral Benchmarking Engine</p>
+        </div>
+        
+        <div className="bg-white/5 p-1 rounded-2xl border border-white/10 flex items-center gap-1">
+          <ModeTab active={mode === 'year-vs-year'} onClick={() => setMode('year-vs-year')} label="Year vs Year" />
+          <ModeTab active={mode === 'constituency-vs-constituency'} onClick={() => setMode('constituency-vs-constituency')} label="Constituency vs Constituency" />
+          <ModeTab active={mode === 'candidate-vs-candidate'} onClick={() => setMode('candidate-vs-candidate')} label="Candidate vs Candidate" />
         </div>
       </header>
 
-      {/* Content Area */}
-      <main className="p-6 space-y-6 max-w-7xl mx-auto w-full">
-        {/* Comparison Selectors */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white dark:bg-[#0D1117] border border-gray-200 dark:border-white/5 rounded-2xl p-8 shadow-sm">
-           <div className="space-y-4">
-              <div className="flex items-center gap-2 text-[10px] font-bold text-blue-500 uppercase tracking-widest">
-                 <Calendar className="w-3.5 h-3.5" /> Base Year
-              </div>
-              <div className="relative">
-                <select 
-                  value={yearA}
-                  onChange={(e) => setYearA(parseInt(e.target.value))}
-                  className="w-full appearance-none bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl px-6 py-4 text-xl font-serif font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                >
-                  {years.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-                <ChevronDown className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              </div>
-           </div>
+      <main className="p-10 space-y-10 max-w-[1400px] mx-auto w-full">
+        {/* Selector Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 items-center bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 shadow-2xl">
+          <div className="lg:col-span-3 space-y-6">
+            <div className="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">
+               <Zap className="w-3.5 h-3.5" /> Baseline Selection
+            </div>
+            {mode === 'year-vs-year' && (
+              <SelectBox value={yearA} onChange={setYearA} options={years.map(y => ({ label: `${y} Assembly`, value: y }))} icon={<Calendar />} />
+            )}
+            {mode === 'constituency-vs-constituency' && (
+              <SearchableInput 
+                value={constA} 
+                onChange={setConstA} 
+                placeholder="Search Constituency..." 
+                type="constituency"
+                icon={<MapPin />} 
+              />
+            )}
+            {mode === 'candidate-vs-candidate' && (
+              <SearchableInput 
+                value={candA} 
+                onChange={setCandA} 
+                placeholder="Search Candidate..." 
+                type="candidate"
+                icon={<User />} 
+              />
+            )}
+          </div>
 
-           <div className="hidden md:flex items-center justify-center pt-8">
-              <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center border border-gray-200 dark:border-white/10 shadow-inner">
-                 <GitCompare className="w-5 h-5 text-gray-400" />
-              </div>
-           </div>
+          <div className="flex items-center justify-center">
+            <button 
+              onClick={handleCompare}
+              className="w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center border-4 border-[#0D1117] shadow-xl hover:scale-110 transition-all active:scale-95 group"
+            >
+              <GitCompare className="w-6 h-6 text-white group-hover:rotate-180 transition-transform duration-500" />
+            </button>
+          </div>
 
-           <div className="space-y-4">
-              <div className="flex items-center gap-2 text-[10px] font-bold text-purple-500 uppercase tracking-widest">
-                 <Calendar className="w-3.5 h-3.5" /> Comparison Year
-              </div>
-              <div className="relative">
-                <select 
-                  value={yearB}
-                  onChange={(e) => setYearB(parseInt(e.target.value))}
-                  className="w-full appearance-none bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl px-6 py-4 text-xl font-serif font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                >
-                  {years.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-                <ChevronDown className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              </div>
-           </div>
+          <div className="lg:col-span-3 space-y-6">
+            <div className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">
+               <Zap className="w-3.5 h-3.5" /> Comparison Selection
+            </div>
+            {mode === 'year-vs-year' && (
+              <SelectBox value={yearB} onChange={setYearB} options={years.map(y => ({ label: `${y} Assembly`, value: y }))} icon={<Calendar />} />
+            )}
+            {mode === 'constituency-vs-constituency' && (
+              <SearchableInput 
+                value={constB} 
+                onChange={setConstB} 
+                placeholder="Search Constituency..." 
+                type="constituency"
+                icon={<MapPin />} 
+              />
+            )}
+            {mode === 'candidate-vs-candidate' && (
+              <SearchableInput 
+                value={candB} 
+                onChange={setCandB} 
+                placeholder="Search Candidate..." 
+                type="candidate"
+                icon={<User />} 
+              />
+            )}
+          </div>
         </div>
 
-        {/* Comparison Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           {/* Year A Snapshot */}
-           <div className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Metrics: {yearA}</h3>
-              <div className="bg-white dark:bg-[#0D1117] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm space-y-6">
-                 <MetricLine label="Winning Front" value="LDF" color="text-green-500" />
-                 <MetricLine label="Voter Turnout" value="74.8%" />
-                 <MetricLine label="Incumbent Status" value="Returned" />
-                 <MetricLine label="Largest Party" value="CPI(M) (62)" />
-              </div>
-           </div>
-
-           {/* Year B Snapshot */}
-           <div className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Metrics: {yearB}</h3>
-              <div className="bg-white dark:bg-[#0D1117] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm space-y-6">
-                 <MetricLine label="Winning Front" value="LDF" color="text-green-500" />
-                 <MetricLine label="Voter Turnout" value="72.7%" />
-                 <MetricLine label="Incumbent Status" value="Defeated" />
-                 <MetricLine label="Largest Party" value="CPI(M) (58)" />
-              </div>
-           </div>
-        </div>
-
-        {/* Differentials / Highlights */}
-        <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-white/5 shadow-2xl relative overflow-hidden group">
-           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-all">
-              <Layers className="w-32 h-32 text-white" />
-           </div>
-           
-           <div className="relative z-10">
-              <h3 className="text-xs font-bold text-white uppercase tracking-widest mb-8 flex items-center gap-2">
-                 <ArrowUpRight className="w-4 h-4 text-blue-500" />
-                 Performance Differential
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                 <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Turnout Shift</div>
-                    <div className="flex items-center gap-2 text-2xl font-bold text-white">
-                       <TrendingUp className="w-6 h-6 text-green-500" /> +2.1%
-                    </div>
-                    <p className="text-[10px] text-gray-500 leading-relaxed font-medium">Increased participation in 2021 compared to 2016 cycle.</p>
-                 </div>
-
-                 <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Seat Swing</div>
-                    <div className="flex items-center gap-2 text-2xl font-bold text-white">
-                       <TrendingUp className="w-6 h-6 text-blue-500" /> +8 Seats
-                    </div>
-                    <p className="text-[10px] text-gray-500 leading-relaxed font-medium">The LDF increased its majority in the 2021 election.</p>
-                 </div>
-
-                 <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Third Front Impact</div>
-                    <div className="flex items-center gap-2 text-2xl font-bold text-white">
-                       <TrendingDown className="w-6 h-6 text-red-500" /> -1 Seat
-                    </div>
-                    <p className="text-[10px] text-gray-500 leading-relaxed font-medium">NDA lost its only seat in the assembly in the latest cycle.</p>
-                 </div>
-              </div>
-           </div>
-        </div>
+        {loading ? (
+          <ComparisonSkeleton />
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={`${mode}-${yearA}-${yearB}-${constA}-${constB}-${candA}-${candB}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-10"
+            >
+              {comparisonData && <ComparisonContent mode={mode} data={comparisonData} />}
+            </motion.div>
+          </AnimatePresence>
+        )}
       </main>
     </div>
   );
 }
 
-function MetricLine({ label, value, color }: any) {
+function ModeTab({ active, onClick, label }: any) {
   return (
-    <div className="flex justify-between items-center py-1">
-       <span className="text-[11px] text-gray-500 dark:text-white/40 font-medium">{label}</span>
-       <span className={`text-[12px] font-bold ${color || 'text-gray-900 dark:text-white'}`}>{value}</span>
+    <button 
+      onClick={onClick}
+      className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+        active ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function SelectBox({ value, onChange, options, icon }: any) {
+  return (
+    <div className="relative group">
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-500 transition-colors">
+        {icon}
+      </div>
+      <select 
+        value={value}
+        onChange={(e) => onChange(parseInt(e.target.value))}
+        className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-[20px] pl-16 pr-10 py-5 text-xl font-black text-white focus:outline-none focus:border-blue-500/50 transition-all cursor-pointer"
+      >
+        {options.map((o: any) => <option key={o.value} value={o.value} className="bg-[#0D1117]">{o.label}</option>)}
+      </select>
+      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 pointer-events-none" />
     </div>
   );
+}
+
+function InputBox({ value, onChange, placeholder, icon }: any) {
+  return (
+    <div className="relative group">
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-500 transition-colors">
+        {icon}
+      </div>
+      <input 
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full bg-white/[0.03] border border-white/10 rounded-[20px] pl-16 pr-6 py-5 text-xl font-black text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all"
+      />
+    </div>
+  );
+}
+
+function ComparisonContent({ mode, data }: any) {
+  const { baseline, comparison } = data;
+  
+  const getMetrics = () => {
+    if (mode === 'year-vs-year') {
+      return [
+        { label: "Voter Turnout (%)", key: "turnout", suffix: "%", icon: <Activity /> },
+        { label: "LDF Seats won", key: "ldf_seats", suffix: "/ 140", icon: <Award /> },
+        { label: "Registered Electors", key: "total_electorate", suffix: "", icon: <Users />, format: (v: number) => v ? (v/10000000).toFixed(2) + " Cr" : "0.00 Cr" },
+        { label: "Total Votes Polled", key: "total_votes", suffix: "", icon: <Zap />, format: (v: number) => v ? (v/10000000).toFixed(2) + " Cr" : "0.00 Cr" },
+        { label: "Contesting Candidates", key: "total_candidates", suffix: "", icon: <User /> },
+        { label: "Average Victory Margin", key: "avg_margin", suffix: " votes", icon: <ChevronRight /> },
+        { label: "Women Candidates %", key: "women_perc", suffix: "%", icon: <Venus /> },
+        { label: "Women Elected", key: "women_elected", suffix: " seats", icon: <ShieldCheck /> },
+        { label: "NOTA Votes", key: "nota_total", suffix: "", icon: <Info />, format: (v: number) => v?.toLocaleString() ?? "0" },
+        { label: "Deposits Forfeited", key: "forfeited", suffix: "", icon: <TrendingDown /> },
+        { label: "Independents Elected", key: "ind_seats", suffix: "", icon: <User /> }
+      ];
+    } else if (mode === 'constituency-vs-constituency') {
+      return [
+        { label: "All-time Win Count", key: "win_count", suffix: " elections", icon: <Award /> },
+        { label: "Avg Victory Margin", key: "avg_margin", suffix: " votes", icon: <ChevronRight /> },
+        { label: "Times Flipped", key: "flips", suffix: " times", icon: <ArrowLeftRight /> },
+        { label: "Highest ever Turnout", key: "highest_turnout", suffix: "%", icon: <TrendingUp /> },
+        { label: "Lowest ever Turnout", key: "lowest_turnout", suffix: "%", icon: <TrendingDown /> },
+        { label: "Current Electorate", key: "current_electorate", suffix: "", icon: <Users />, format: (v: number) => v?.toLocaleString() ?? "0" },
+        { label: "Electorate Growth", key: "electorate_growth", suffix: "", icon: <TrendingUp />, format: (v: number) => v ? (v > 0 ? "+" : "") + v.toLocaleString() : "0" },
+        { label: "Total Candidates ever", key: "total_candidates", suffix: "", icon: <Users /> },
+        { label: "Avg Cands per Election", key: "avg_candidates", suffix: "", icon: <User /> },
+        { label: "Closest ever Race", key: "closest_race", suffix: " votes", icon: <Target /> },
+        { label: "Biggest ever Landslide", key: "biggest_landslide", suffix: " votes", icon: <Zap /> },
+        { label: "Women won (total)", key: "women_won", suffix: "", icon: <Venus /> },
+        { label: "NOTA % (2016-21 avg)", key: "nota_avg", suffix: "%", icon: <Info /> }
+      ];
+    } else {
+      return [
+        { label: "Total Contested", key: "contested", suffix: " times", icon: <History /> },
+        { label: "Total Wins", key: "wins", suffix: "", icon: <Award /> },
+        { label: "Win Rate %", key: "win_rate", suffix: "%", icon: <Activity /> },
+        { label: "Total Votes received", key: "total_votes", suffix: "", icon: <Zap />, format: (v: number) => v?.toLocaleString() ?? "0" },
+        { label: "Best ever Vote Count", key: "best_votes", suffix: "", icon: <TrendingUp />, format: (v: number) => v?.toLocaleString() ?? "0" },
+        { label: "Best Vote Share", key: "best_share", suffix: "%", icon: <Zap /> },
+        { label: "Avg Vote Share", key: "avg_share", suffix: "%", icon: <Activity /> },
+        { label: "Seats Contested", key: "seats", suffix: "", icon: <MapPin />, format: (v: string[]) => v?.length ?? 0 },
+        { label: "Parties representing", key: "parties", suffix: "", icon: <ShieldCheck />, format: (v: string[]) => v?.length ?? 0 },
+        { label: "First Election Year", key: "first_year", suffix: "", icon: <Calendar /> },
+        { label: "Last Election Year", key: "last_year", suffix: "", icon: <Calendar /> },
+        { label: "Career Span", key: "span", suffix: " years", icon: <History /> },
+        { label: "Biggest Win Margin", key: "max_margin", suffix: " votes", icon: <TrendingUp /> },
+        { label: "Closest Win/Loss", key: "min_margin", suffix: " votes", icon: <Target /> }
+      ];
+    }
+  };
+
+  const metrics = getMetrics();
+
+  return (
+    <div className="space-y-10">
+      <div className="bg-[#161b22]/30 border border-white/5 rounded-[40px] overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-white/5">
+              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Metric Analysis</th>
+              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{baseline.year || baseline.name} Results</th>
+              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{comparison.year || comparison.name} Results</th>
+              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Delta (Δ)</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5">
+            {metrics.map((m: any, i: number) => {
+              const v1 = baseline[m.key];
+              const v2 = comparison[m.key];
+              const delta = (typeof v1 === 'number' && typeof v2 === 'number') ? (v2 - v1) : null;
+              
+              return (
+                <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
+                  <td className="px-10 py-8">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-blue-500 transition-colors">
+                        {m.icon}
+                      </div>
+                      <span className="text-sm font-black tracking-tight">{m.label}</span>
+                    </div>
+                  </td>
+                  <td className="px-10 py-8 text-xl font-black">
+                    {m.format ? m.format(v1) : v1}{m.suffix}
+                  </td>
+                  <td className="px-10 py-8 text-xl font-black">
+                    {m.format ? m.format(v2) : v2}{m.suffix}
+                  </td>
+                  <td className="px-10 py-8">
+                    <DeltaBadge value={delta} isPerc={m.suffix === '%'} />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      
+      {/* Footer Insight */}
+      <div className="bg-gradient-to-br from-blue-600/20 to-transparent border border-blue-500/10 rounded-[40px] p-10 flex items-center justify-between">
+         <div className="space-y-4">
+            <h3 className="text-2xl font-black tracking-tight">Electoral Benchmarking Insights</h3>
+            <p className="text-white/40 text-sm max-w-2xl leading-relaxed">
+               This side-by-side analysis highlights the critical performance shifts in {mode.replace(/-/g, ' ')}. 
+               The comparative delta between the selected items provides a data-driven overview of historical trends and success patterns.
+            </p>
+         </div>
+         <Download className="w-12 h-12 text-white/10 hover:text-white transition-all cursor-pointer" />
+      </div>
+    </div>
+  );
+}
+
+function DeltaBadge({ value, isPerc }: { value: number | null, isPerc?: boolean }) {
+  if (value === null) return <span className="text-white/10">—</span>;
+  
+  const isPos = value > 0;
+  const isZero = value === 0;
+  
+  return (
+    <div className={`px-4 py-2 rounded-xl text-[10px] font-black flex items-center gap-2 w-fit ${
+      isZero ? 'bg-white/5 text-white/40' : (isPos ? 'bg-emerald-500/20 text-emerald-500' : 'bg-red-500/20 text-red-500')
+    }`}>
+      {isZero ? null : (isPos ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />)}
+      {isZero ? 'NO CHANGE' : `${isPos ? '+' : ''}${value.toLocaleString()}${isPerc ? '%' : ''}`}
+    </div>
+  );
+}
+
+function ComparisonSkeleton() {
+  return (
+    <div className="space-y-10 animate-pulse">
+      <div className="h-[600px] bg-white/5 rounded-[40px]" />
+      <div className="h-[200px] bg-white/5 rounded-[40px]" />
+    </div>
+  );
+}
+
+function Venus(props: any) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 15V22"></path><path d="M9 19H15"></path><circle cx="12" cy="9" r="6"></circle></svg>
+  )
+}
+
+function Target(props: any) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+  )
+}
+
+function ChevronRight(props: any) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m9 18 6-6-6-6"></path></svg>
+  )
 }

@@ -1,135 +1,380 @@
 "use client";
 
-import { useState } from "react";
-import { 
-  User, 
-  Search, 
-  ChevronRight, 
-  TrendingUp, 
+import { useState, useEffect } from "react";
+import {
+  User,
+  Search,
+  ChevronRight,
+  TrendingUp,
   Award,
   History,
   Info,
   Calendar,
-  ExternalLink
+  ExternalLink,
+  Download,
+  Bell,
+  ChevronLeft,
+  ChevronsLeft,
+  ChevronsRight
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import { fetchCandidateTimeline, searchCandidates, fetchFeaturedCandidates } from "@/lib/api";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export function CandidatesPageContent() {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+  const [timeline, setTimeline] = useState<any[]>([]);
+  const [summary, setSummary] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [featured, setFeatured] = useState<any[]>([]);
+  const [view, setView] = useState<'selection' | 'detail'>('selection');
 
-  const careerHighlights = [
-    { year: 2021, event: "Won Dharmadam", party: "CPI(M)", margin: "50,123", role: "Chief Minister" },
-    { year: 2016, event: "Won Dharmadam", party: "CPI(M)", margin: "36,905", role: "Chief Minister" },
-    { year: 1996, event: "Won Payyannur", party: "CPI(M)", margin: "28,078", role: "MLA" },
-    { year: 1977, event: "Won Koothuparamba", party: "CPI(M)", margin: "4,401", role: "MLA" },
-    { year: 1970, event: "Won Koothuparamba", party: "CPI(M)", margin: "2,742", role: "MLA" },
-  ];
+  useEffect(() => {
+    // Load featured candidates on mount
+    const loadFeatured = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchFeaturedCandidates();
+        setFeatured(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadFeatured();
+  }, []);
+
+  const handleSearch = async (val: string) => {
+    setQuery(val);
+    if (val.length < 2) {
+      setResults([]);
+      return;
+    }
+    
+    // Debounce is handled by the UI or we can add it here
+    const res = await searchCandidates(val);
+    setResults(res.data);
+  };
+
+  const selectCandidate = async (cand: any) => {
+    setLoading(true);
+    setSelectedCandidate(cand);
+    setResults([]);
+    setQuery("");
+    setView('detail');
+    try {
+      const res = await fetchCandidateTimeline(cand.name);
+      setTimeline(res.data);
+      setSummary(res.summary);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const currentStats = {
+    elections: summary?.elections || 0,
+    wins: summary?.wins || 0,
+    gender: timeline[0]?.sex || "Male",
+    winRate: summary?.win_rate || "0%"
+  };
+
+  const chartData = [40, 55, 62, 45, 70, 85, 95, 110];
 
   return (
-    <div className="flex-1 flex flex-col bg-[#F8FAFC] dark:bg-[#08090a] min-h-screen">
-      {/* Top Bar */}
-      <header className="h-14 border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#0D1117] flex items-center justify-between px-6 sticky top-0 z-20">
-        <div className="flex flex-col">
-          <h1 className="text-sm font-semibold text-gray-900 dark:text-white">Candidates</h1>
-          <span className="text-[11px] text-gray-500 dark:text-white/40 font-normal">Candidate history and career tracking</span>
+    <div className="flex-1 flex flex-col bg-[#0D1117] text-white min-h-screen">
+      {/* Top Bar - Exact UI */}
+      <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-20">
+        <div className="flex items-center gap-12 flex-1">
+          <h1 className="text-xl font-bold tracking-tight">Kerala Election Archive</h1>
+
+          <div className="relative flex-1 max-w-xl group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-blue-500 transition-colors" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search candidate by name..."
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-blue-500/50 transition-all"
+            />
+            {results.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-[#161b22] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+                {results.map((r, i) => (
+                  <button
+                    key={i}
+                    onClick={() => selectCandidate(r)}
+                    className="w-full text-left px-6 py-4 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold">{r.name}</span>
+                      <span className="text-[10px] text-white/40 uppercase font-black">{r.party}</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-white/20" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <button className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-colors">
+            <Bell className="w-5 h-5 text-white/60" />
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-[#0D1117]" />
+          </button>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-sm">
+            PV
+          </div>
         </div>
       </header>
 
-      {/* Content Area */}
-      <main className="p-6 space-y-6 max-w-7xl mx-auto w-full">
-        {/* Search Header */}
-        <div className="bg-white dark:bg-[#0D1117] border border-gray-200 dark:border-white/5 rounded-2xl p-8 shadow-sm text-center">
-          <div className="max-w-2xl mx-auto space-y-6">
-            <div className="inline-flex items-center justify-center p-3 bg-blue-500/10 rounded-full mb-2">
-              <User className="w-6 h-6 text-blue-500" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Candidate Time-Machine</h2>
-            <p className="text-sm text-gray-500 dark:text-white/40">Search through 60,000+ historical candidate records to trace any representative's political journey from 1957 to 2021.</p>
-            
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="block w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl text-sm placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                placeholder="Search by name (e.g. Pinarayi Vijayan, Oommen Chandy...)"
-              />
-            </div>
-          </div>
+      {/* Sub Header / Breadcrumbs */}
+      <div className="px-8 py-6 flex items-center justify-between">
+        <div className="flex items-center gap-3 text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">
+          <span>Database</span>
+          <ChevronRight className="w-3 h-3" />
+          <span className={view === 'selection' ? "text-white" : ""}>Candidates</span>
+          {view === 'detail' && (
+            <>
+              <ChevronRight className="w-3 h-3 text-white" />
+              <span className="text-white">{selectedCandidate?.name}</span>
+            </>
+          )}
         </div>
 
-        {/* Career Timeline Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Snapshot Card */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white dark:bg-[#0D1117] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
-                  <User className="w-8 h-8 text-gray-400" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Pinarayi Vijayan</h3>
-                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">CPI(M) · LDF</p>
-                </div>
-              </div>
+        {view === 'detail' && (
+          <button
+            onClick={() => setView('selection')}
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+          >
+            <ChevronLeft className="w-3 h-3" />
+            Back to Selection
+          </button>
+        )}
+      </div>
 
-              <div className="space-y-4">
-                <MetricSmall label="Total Contests" value="6 Elections" />
-                <MetricSmall label="Victories" value="5 Wins" />
-                <MetricSmall label="Avg Vote Share" value="54.2%" />
-                <MetricSmall label="Active Since" value="1970" />
-              </div>
-
-              <button className="w-full mt-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-2 transition-all">
-                View Full Dossier <ExternalLink className="w-3 h-3" />
-              </button>
+      <AnimatePresence mode="wait">
+        {view === 'selection' ? (
+          <motion.main
+            key="selection"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="px-8 pb-12"
+          >
+            <div className="mb-10">
+              <h2 className="text-4xl font-black tracking-tight">Featured Candidates</h2>
+              <p className="text-sm text-white/40 mt-2">Select a prominent representative to view their electoral history</p>
             </div>
-          </div>
 
-          {/* Timeline Column */}
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-[#0D1117] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-8 flex items-center gap-2">
-                <History className="w-4 h-4 text-blue-500" />
-                Electoral Journey
-              </h3>
-
-              <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-blue-500 before:via-blue-500/20 before:to-transparent">
-                {careerHighlights.map((item, index) => (
-                  <div key={index} className="relative flex items-center group">
-                    <div className="absolute left-0 w-10 h-10 rounded-full bg-white dark:bg-[#0D1117] border-2 border-blue-500 flex items-center justify-center z-10 group-hover:scale-110 transition-transform shadow-lg">
-                      <Calendar className="w-4 h-4 text-blue-500" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              {loading && featured.length === 0 ? (
+                Array(5).fill(0).map((_, i) => (
+                  <div key={i} className="bg-[#161b22]/50 border border-white/5 rounded-[32px] p-8 flex flex-col items-center h-[280px]">
+                    <Skeleton className="w-20 h-20 rounded-2xl mb-6" />
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-2 w-1/2" />
+                  </div>
+                ))
+              ) : (
+                featured.map((cand, i) => (
+                  <button
+                    key={i}
+                    onClick={() => selectCandidate(cand)}
+                    className="bg-[#161b22]/50 border border-white/5 rounded-[32px] p-8 flex flex-col items-center text-center hover:bg-blue-500/10 hover:border-blue-500/30 transition-all group"
+                  >
+                    <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:scale-110 transition-transform">
+                      <User className="w-8 h-8 text-white/20" />
                     </div>
-                    <div className="ml-14 flex-1 bg-gray-50/50 dark:bg-white/[0.01] border border-gray-100 dark:border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-gray-900 dark:text-white">{item.year} Assembly</span>
-                        <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[9px] font-bold rounded uppercase tracking-tighter">Winner</span>
+                    <h4 className="text-lg font-black tracking-tight leading-tight mb-2">{cand.name}</h4>
+                    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{cand.party}</span>
+
+                    <div className="mt-8 flex items-center gap-2 text-blue-500 text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                      View Timeline <ChevronRight className="w-3 h-3" />
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          </motion.main>
+        ) : (
+          <motion.main
+            key="detail"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="px-8 pb-12 flex flex-col lg:flex-row gap-8"
+          >
+            {/* Left Column - Profile & Growth */}
+            <div className="lg:w-[400px] flex flex-col gap-6">
+              {loading ? (
+                <>
+                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 flex flex-col items-center">
+                    <Skeleton className="w-32 h-32 rounded-3xl mb-8" />
+                    <Skeleton className="h-10 w-3/4 mb-4" />
+                    <Skeleton className="h-4 w-1/2 mb-10" />
+                    <div className="grid grid-cols-2 w-full gap-10 border-t border-white/5 pt-10">
+                      <Skeleton className="h-12 w-full" />
+                      <Skeleton className="h-12 w-full" />
+                      <Skeleton className="h-12 w-full" />
+                      <Skeleton className="h-12 w-full" />
+                    </div>
+                  </div>
+                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 h-64">
+                    <Skeleton className="h-4 w-24 mb-10" />
+                    <Skeleton className="h-32 w-full rounded-2xl" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Profile Card */}
+                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 flex flex-col items-center text-center">
+                    <div className="w-32 h-32 rounded-3xl bg-white/5 flex items-center justify-center mb-8 border border-white/10 overflow-hidden">
+                      <User className="w-12 h-12 text-white/20" />
+                    </div>
+
+                    <h2 className="text-4xl font-black mb-2 tracking-tight leading-tight whitespace-pre-line">
+                      {selectedCandidate?.name?.split(' ').join('\n')}
+                    </h2>
+
+                    <div className="flex items-center gap-2 mb-10">
+                      <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[9px] font-black rounded-full uppercase">
+                        {summary?.status || 'Representative'}
+                      </span>
+                      <span className="text-white/40 text-[10px] font-bold">• {selectedCandidate?.party || "Independent"}</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 w-full gap-y-10 text-left border-t border-white/5 pt-10">
+                      <div>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mb-1">Elections</p>
+                        <p className="text-2xl font-black">{currentStats.elections}</p>
                       </div>
-                      <div className="text-[13px] font-bold text-gray-900 dark:text-white mb-1">{item.event}</div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] text-gray-400 font-medium">Margin: <span className="text-blue-500 font-bold">{item.margin}</span></span>
-                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/10" />
-                        <span className="text-[10px] text-gray-400 font-medium">{item.role}</span>
+                      <div>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mb-1">Wins</p>
+                        <p className="text-2xl font-black text-emerald-500">{currentStats.wins}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mb-1">Gender</p>
+                        <p className="text-2xl font-black">{currentStats.gender}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mb-1">Win Rate</p>
+                        <p className="text-2xl font-black">{currentStats.winRate}</p>
                       </div>
                     </div>
                   </div>
-                ))}
+
+                  {/* Growth Chart Card */}
+                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10">
+                    <div className="flex items-center justify-between mb-10">
+                      <div>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mb-1">Performance</p>
+                        <h4 className="text-xs font-black uppercase tracking-widest">Growth</h4>
+                      </div>
+                      <div className="flex items-center gap-2 text-emerald-500">
+                        <TrendingUp className="w-4 h-4" />
+                        <span className="text-sm font-black">+12.4%</span>
+                      </div>
+                    </div>
+
+                    <div className="h-40 flex items-end gap-2 px-2">
+                      {chartData.map((val, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ height: 0 }}
+                          animate={{ height: `${val}%` }}
+                          transition={{ delay: i * 0.05, duration: 0.5 }}
+                          className="flex-1 bg-gradient-to-t from-emerald-500/20 to-emerald-500 rounded-t-lg opacity-80 hover:opacity-100 transition-opacity"
+                        />
+                      ))}
+                    </div>
+                    <div className="flex justify-between mt-4 text-[10px] font-black text-white/20">
+                      <span>1970</span>
+                      <span>2021</span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Right Column - Timeline */}
+            <div className="flex-1 flex flex-col gap-6">
+              <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] flex flex-col min-h-screen">
+                <div className="p-10 space-y-12">
+                  {loading ? (
+                    Array(3).fill(0).map((_, i) => (
+                      <div key={i} className="flex gap-10">
+                        <div className="w-16 flex flex-col items-center gap-4">
+                          <Skeleton className="w-4 h-4 rounded-full" />
+                          <Skeleton className="h-4 w-10" />
+                          <div className="flex-1 w-0.5 bg-white/5" />
+                        </div>
+                        <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-[32px] p-8">
+                          <Skeleton className="h-8 w-1/2 mb-4" />
+                          <Skeleton className="h-4 w-1/4 mb-10" />
+                          <div className="grid grid-cols-3 gap-8 border-t border-white/5 pt-6">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : timeline.length > 0 ? timeline.map((item, idx) => (
+                    <div key={idx} className="flex gap-10 group">
+                      <div className="w-16 flex flex-col items-center gap-4">
+                        <div className="w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                        <span className="text-sm font-black text-white/40">{item.year}</span>
+                        <div className="flex-1 w-0.5 bg-white/5 group-last:hidden" />
+                      </div>
+
+                      <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-[32px] p-8 hover:bg-white/5 transition-all">
+                        <div className="flex items-center justify-between mb-6">
+                          <div>
+                            <h4 className="text-2xl font-black tracking-tight">{item.constituency}</h4>
+                            <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-1">Party: {item.party}</p>
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <span className={`px-3 py-1 ${item.rank === 1 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'} text-[8px] font-black rounded uppercase tracking-tighter mb-2`}>
+                              {item.rank === 1 ? 'Elected' : 'Lost'}
+                            </span>
+                            <p className="text-lg font-black tracking-tight">Votes: {item.votes?.toLocaleString()}</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-8 border-t border-white/5 pt-6">
+                          <div>
+                            <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-1">Rank</p>
+                            <p className="text-sm font-black">{item.rank}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-1">Alliance</p>
+                            <p className={`text-sm font-black ${item.alliance === 'LDF' ? 'text-emerald-500' : 'text-blue-500'}`}>{item.alliance}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )) : (
+                    <div className="text-center py-20">
+                      <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Search className="w-8 h-8 text-white/20" />
+                      </div>
+                      <h4 className="text-xl font-black text-white/60">No history found</h4>
+                      <p className="text-sm text-white/20 mt-2">Search for a candidate to see their career timeline</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
+          </motion.main>
+        )}
+      </AnimatePresence>
 
-function MetricSmall({ label, value }: any) {
-  return (
-    <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5 last:border-0">
-      <span className="text-[11px] text-gray-500 dark:text-white/40">{label}</span>
-      <span className="text-[11px] font-bold text-gray-900 dark:text-white">{value}</span>
     </div>
   );
 }
