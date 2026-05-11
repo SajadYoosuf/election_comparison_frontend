@@ -44,3 +44,26 @@ export async function fetchConstituencyHistory(name: string) {
   console.log(`API: fetchConstituencyHistory(${name}) ->`, data);
   return data;
 }
+export async function fetchSwingSeats() {
+  const res = await fetch(`${API_BASE}/dashboard/switched-seats`);
+  if (!res.ok) throw new Error("Failed to fetch switched seats");
+  const data = await res.json();
+  console.log("API: fetchSwitchedSeats ->", data);
+  return data;
+}
+
+export async function fetchYearMetrics(year: number) {
+  const res = await fetch(`${API_BASE}/dashboard/year-metrics/${year}`);
+  if (!res.ok) throw new Error(`Failed to fetch metrics for ${year}`);
+  const data = await res.json();
+  console.log(`API: fetchYearMetrics(${year}) ->`, data);
+  return data;
+}
+
+export async function fetchTurnoutHistory() {
+  const res = await fetch(`${API_BASE}/dashboard/turnout-history`);
+  if (!res.ok) throw new Error("Failed to fetch turnout history");
+  const data = await res.json();
+  console.log("API: fetchTurnoutHistory ->", data);
+  return data;
+}
