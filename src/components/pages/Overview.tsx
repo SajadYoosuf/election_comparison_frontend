@@ -211,8 +211,8 @@ export function OverviewPageContent() {
           <StatCard
             title={t.voterTurnout}
             value={yearMetrics?.voter_turnout || "74.06%"}
-            trend={activeYear === 2021 ? "Down" : "Up"}
-            isDown={activeYear === 2021}
+            trend={yearMetrics ? "Official" : "Fallback"}
+            isDown={false}
             loading={loading}
             icon={<TrendingDown className="w-8 h-8 text-white/10" />}
           />
