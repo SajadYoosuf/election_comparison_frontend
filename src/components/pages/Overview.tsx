@@ -250,18 +250,18 @@ export function OverviewPageContent() {
               <AllianceBar label="NDA (National Democratic Alliance)" current={yearMetrics?.alliance_seats?.NDA || 0} total={yearMetrics?.total_seats || 140} color="#f97316" />
             </div>
 
-            <div className="pt-10 border-t border-white/5 space-y-6">
-              <h3 className="text-2xl font-black">{t.turnoutTrend} ({activeYear})</h3>
-              <div className="bg-white/[0.02] border border-white/5 rounded-[30px] p-8 flex items-center justify-between group hover:bg-white/[0.04] transition-all">
+            <div className="pt-8 md:pt-10 border-t border-white/5 space-y-4 md:space-y-6">
+              <h3 className="text-lg md:text-2xl font-black">{t.turnoutTrend} ({activeYear})</h3>
+              <div className="bg-white/[0.02] border border-white/5 rounded-[24px] md:rounded-[30px] p-6 md:p-8 flex items-center justify-between group hover:bg-white/[0.04] transition-all">
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.electors}</p>
-                  <h4 className="text-4xl font-black text-[#4ae176]">
+                  <p className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.electors}</p>
+                  <h4 className="text-2xl md:text-4xl font-black text-[#4ae176]">
                     {loading ? "---" : yearMetrics?.total_votes_polled?.toLocaleString() || "0"}
                   </h4>
                 </div>
                 <div className="text-right space-y-1">
-                  <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.voterTurnout}</p>
-                  <p className="text-2xl font-black text-white/80">{yearMetrics?.voter_turnout || "N/A"}</p>
+                  <p className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.voterTurnout}</p>
+                  <p className="text-lg md:text-2xl font-black text-white/80">{yearMetrics?.voter_turnout || "N/A"}</p>
                 </div>
               </div>
             </div>
@@ -358,23 +358,24 @@ export function OverviewPageContent() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/5">
-                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.area}</th>
-                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.winner}</th>
-                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.party}</th>
-                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.votes}</th>
-                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.winningGap}</th>
+                  <th className="px-6 md:px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.area}</th>
+                  <th className="px-6 md:px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{t.winner}</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] hidden md:table-cell">{t.party}</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] hidden sm:table-cell">{t.votes}</th>
+                  <th className="px-6 md:px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] text-right md:text-left">{t.winningGap}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {biggestWins.slice((bwPage - 1) * bwPageSize, bwPage * bwPageSize).map((row: any, i: number) => (
                   <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
-                    <td className="px-10 py-6 text-sm font-black text-white">{row.area}</td>
-                    <td className="px-10 py-6">
+                    <td className="px-6 md:px-10 py-6 text-sm font-black text-white truncate max-w-[120px] md:max-w-none">{row.area}</td>
+                    <td className="px-6 md:px-10 py-6">
                       <div className="flex flex-col">
-                        <span className="text-sm font-black text-white/90">{row.winner}</span>
+                        <span className="text-sm font-black text-white/90 truncate max-w-[100px] md:max-w-none">{row.winner}</span>
+                        <span className="text-[10px] text-white/30 md:hidden font-bold">{row.party}</span>
                       </div>
                     </td>
-                    <td className="px-10 py-6">
+                    <td className="px-10 py-6 hidden md:table-cell">
                       <span className={cn(
                         "px-3 py-1 rounded-full text-[10px] font-black uppercase",
                         row.party === 'INC' || row.party === 'IUML' ? "bg-blue-500/10 text-blue-500" :
@@ -384,8 +385,8 @@ export function OverviewPageContent() {
                         {row.party}
                       </span>
                     </td>
-                    <td className="px-10 py-6 text-sm font-black text-white/60">{row.votes?.toLocaleString()}</td>
-                    <td className="px-10 py-6">
+                    <td className="px-10 py-6 text-sm font-black text-white/60 hidden sm:table-cell">{row.votes?.toLocaleString()}</td>
+                    <td className="px-6 md:px-10 py-6 text-right md:text-left">
                       <span className="text-sm font-black text-[#4ae176]">+{row.margin?.toLocaleString()}</span>
                     </td>
                   </tr>

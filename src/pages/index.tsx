@@ -65,45 +65,45 @@ export default function LandingPage() {
          </nav>
 
          {/* Hero Section */}
-         <section className="relative pt-32 pb-24 px-6 overflow-hidden min-h-[80vh] flex items-center justify-center">
+         <section className="relative pt-20 md:pt-32 pb-16 md:pb-24 px-6 overflow-hidden min-h-[70vh] md:min-h-[80vh] flex items-center justify-center">
             {/* Background Map Overlay */}
             <div
-               className="absolute inset-0 opacity-[0.8] pointer-events-none"
+               className="absolute inset-0 opacity-[0.4] md:opacity-[0.8] pointer-events-none"
                style={{
                   backgroundImage: 'url("/kerala-map-bg.png")',
-                  backgroundSize: 'cover',
+                  backgroundSize: 'contain',
                   backgroundPosition: 'center 20%',
                   backgroundRepeat: 'no-repeat'
                }}
             />
             {/* Dark Radial Mask for Text Readability */}
-            <div className="absolute inset-0 bg-[#08090a]/40 backdrop-blur-[2px] pointer-events-none" />
+            <div className="absolute inset-0 bg-[#08090a]/40 backdrop-blur-[1px] md:backdrop-blur-[2px] pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#08090a_70%)] pointer-events-none" />
 
-            <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
+            <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 md:space-y-8">
                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4ae176]/10 border border-[#4ae176]/20 text-[#4ae176] text-[9px] font-bold uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#4ae176] animate-pulse" />
                   Historical Data Explorer
                </div>
 
-               <h1 className="text-[64px] font-extrabold leading-[1.05] tracking-tight">
+               <h1 className="text-4xl md:text-[64px] font-extrabold leading-[1.1] md:leading-[1.05] tracking-tight">
                   {t.title} <br />
                   <span className="text-[#4ae176]">{t.accent}</span>
                </h1>
 
-               <p className="text-white/40 text-lg max-w-2xl mx-auto leading-relaxed">
+               <p className="text-white/40 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
                   {t.sub}
                </p>
 
-               <div className="flex items-center justify-center gap-4 pt-4">
-                  <Link href="/overview">
-                     <button className="px-8 py-3.5 bg-white text-black font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-white/90 transition-all shadow-xl shadow-white/5">
+               <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
+                  <Link href="/overview" className="w-full md:w-auto">
+                     <button className="w-full md:px-8 py-3.5 bg-white text-black font-bold rounded-xl md:rounded-lg text-sm flex items-center justify-center gap-2 hover:bg-white/90 transition-all shadow-xl shadow-white/5">
                         {t.start} <ArrowUpRight className="w-4 h-4" />
                      </button>
                   </Link>
                   <button
                      onClick={() => setIsModalOpen(true)}
-                     className="px-8 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-lg text-sm flex items-center gap-2 hover:bg-white/10 transition-all"
+                     className="hidden md:flex px-8 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-lg text-sm items-center gap-2 hover:bg-white/10 transition-all"
                   >
                      {t.results} <MapIcon className="w-4 h-4 opacity-40" />
                   </button>
@@ -111,8 +111,8 @@ export default function LandingPage() {
             </div>
          </section>
 
-         {/* Stats Bar */}
-         <section className="max-w-6xl mx-auto px-6 mb-32">
+         {/* Stats Bar - Hidden on mobile to match image */}
+         <section className="hidden md:block max-w-6xl mx-auto px-6 mb-32">
             <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center justify-between gap-8">
                <div className="flex flex-col">
                   <span className="text-2xl font-black text-white leading-none">17</span>
@@ -141,9 +141,12 @@ export default function LandingPage() {
          </section>
 
          {/* Features Section */}
-         <section className="max-w-6xl mx-auto px-6 mb-40">
-            <div className="text-center mb-20 space-y-4">
-               <h2 className="text-3xl font-extrabold tracking-tight">Designed for Intelligence</h2>
+         <section className="max-w-4xl mx-auto px-6 py-20 md:py-40">
+            <div className="text-center mb-16 md:mb-20 space-y-4">
+               <h2 className="text-3xl font-extrabold tracking-tight">
+                  <span className="md:hidden">Designed for Insight</span>
+                  <span className="hidden md:inline">Designed for Intelligence</span>
+               </h2>
                <p className="text-white/40 text-sm max-w-xl mx-auto leading-relaxed">
                   Providing granular insights for those who need to understand the heartbeat of the electorate.
                </p>
@@ -151,25 +154,24 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all group">
-                     <div className="w-10 h-10 bg-[#4ae176]/10 rounded-xl flex items-center justify-center">
-                        <BookOpen className="w-5 h-5 text-[#4ae176]" />
+                  <div className="bg-white/[0.02] border border-white/5 rounded-[32px] md:rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all group">
+                     <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-white/40" />
                      </div>
                      <div className="space-y-3">
-                        <h3 className="text-lg font-bold">Journalists & Analysts</h3>
+                        <h3 className="text-xl md:text-lg font-bold">Journalists & Analysts</h3>
                         <p className="text-sm text-white/40 leading-relaxed">
                            Extract deep CSV datasets, generate automated swing reports, and cross-reference demographic shifts across six decades with a single click.
                         </p>
                      </div>
-
                   </div>
 
-                  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all">
-                     <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                        <Users className="w-5 h-5 text-blue-500" />
+                  <div className="bg-white/[0.02] border border-white/5 rounded-[32px] md:rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all">
+                     <div className="w-10 h-10 bg-[#4ae176]/10 rounded-xl flex items-center justify-center">
+                        <Users className="w-5 h-5 text-[#4ae176]" />
                      </div>
                      <div className="space-y-3">
-                        <h3 className="text-lg font-bold">Students</h3>
+                        <h3 className="text-xl md:text-lg font-bold">Students</h3>
                         <p className="text-sm text-white/40 leading-relaxed">
                            A perfect academic companion for political science research. Understand historical alliance patterns and seat sharing ratios from 1957 onwards.
                         </p>
@@ -177,27 +179,48 @@ export default function LandingPage() {
                   </div>
                </div>
 
-               <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all">
-                  <div className="w-10 h-10 bg-[#4ae176]/10 rounded-xl flex items-center justify-center">
-                     <Search className="w-5 h-5 text-[#4ae176]" />
+               <div className="bg-white/[0.02] border border-white/5 rounded-[32px] md:rounded-2xl p-8 space-y-6 hover:bg-white/[0.04] transition-all">
+                  <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+                     <Search className="w-5 h-5 text-white/40" />
                   </div>
                   <div className="space-y-3">
-                     <h3 className="text-lg font-bold">Curious Citizens</h3>
+                     <h3 className="text-xl md:text-lg font-bold">Curious Citizens</h3>
                      <p className="text-sm text-white/40 leading-relaxed">
                         Find out how your constituency voted 20 years ago. Compare candidate performance across different eras in a clean, visual interface.
                      </p>
                   </div>
                </div>
+            </div>
+         </section>
 
-
+         {/* Historical Milestones - Mobile Only */}
+         <section className="md:hidden max-w-4xl mx-auto px-6 py-20 space-y-16">
+            <h2 className="text-3xl font-black tracking-tight leading-tight">Historical <br /> Milestones</h2>
+            
+            <div className="space-y-12 relative border-l border-white/5 pl-8 ml-2">
+               <div className="relative space-y-2">
+                  <div className="absolute -left-[41px] top-1 w-6 h-6 rounded-lg bg-[#4ae176]/10 text-[#4ae176] border border-white/5 flex items-center justify-center text-[10px] font-black z-10">57</div>
+                  <h4 className="text-xl font-bold">The First Ministry</h4>
+                  <p className="text-sm text-white/40 leading-relaxed">The E.M.S. Namboodiripad government is formed, marking the first democratically elected communist ministry in the world.</p>
+               </div>
+               <div className="relative space-y-2">
+                  <div className="absolute -left-[41px] top-1 w-6 h-6 rounded-lg bg-white/5 text-white/40 border border-white/5 flex items-center justify-center text-[10px] font-black z-10">82</div>
+                  <h4 className="text-xl font-bold">The Coalition Era</h4>
+                  <p className="text-sm text-white/40 leading-relaxed">The emergence of the LDF and UDF fronts, setting the stage for the alternating government pattern that lasted decades.</p>
+               </div>
+               <div className="relative space-y-2">
+                  <div className="absolute -left-[41px] top-1 w-6 h-6 rounded-lg bg-[#4ae176]/10 text-[#4ae176] border border-white/5 flex items-center justify-center text-[10px] font-black z-10">21</div>
+                  <h4 className="text-xl font-bold">Breaking the Norm</h4>
+                  <p className="text-sm text-white/40 leading-relaxed">The Pinarayi Vijayan-led government wins a record consecutive term, breaking a 40-year historical precedent.</p>
+               </div>
             </div>
          </section>
 
          {/* Bottom CTA */}
-         <section className="max-w-6xl mx-auto px-6 mb-40">
-            <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-24 text-center space-y-8 relative overflow-hidden">
+         <section className="max-w-6xl mx-auto px-6 mb-20 md:mb-40">
+            <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-12 md:p-24 text-center space-y-8 relative overflow-hidden">
                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
-               <h2 className="text-4xl font-extrabold tracking-tight relative z-10">Ready to dive into the data?</h2>
+               <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight relative z-10">Ready to dive into the data?</h2>
                <p className="text-white/40 text-sm max-w-xl mx-auto relative z-10">
                   Join thousands of researchers and citizens who use ElectionHub Kerala as their primary source for verified historical data.
                </p>
@@ -208,6 +231,7 @@ export default function LandingPage() {
                </Link>
             </div>
          </section>
+
 
          {/* Footer */}
          <footer className="w-full px-8 pb-20 pt-10 border-t border-white/5 bg-black/20">

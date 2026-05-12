@@ -84,34 +84,34 @@ export function DemographicsPageContent() {
    return (
       <div className="flex-1 flex flex-col bg-[#0D1117] text-white min-h-screen font-sans selection:bg-blue-500/30 pb-24 md:pb-0">
          {/* Top Header - High Fidelity */}
-         <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex items-center justify-between px-6 md:px-10 sticky top-0 z-50">
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+         <header className="h-auto py-4 md:h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex flex-row items-center justify-between px-6 md:px-10 sticky top-0 z-50">
+            <h1 className="text-base md:text-xl font-bold tracking-tight text-white flex items-center gap-2">
                Kerala Polls Archive
             </h1>
-            <div className="flex items-center gap-4">
-               <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors">
-                  <Globe className="w-5 h-5 text-white/60" />
+            <div className="flex items-center gap-2 md:gap-4">
+               <button className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors">
+                  <Globe className="w-4 h-4 md:w-5 md:h-5 text-white/60" />
                </button>
-               <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors">
-                  <Settings className="w-5 h-5 text-white/60" />
+               <button className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors">
+                  <Settings className="w-4 h-4 md:w-5 md:h-5 text-white/60" />
                </button>
             </div>
          </header>
 
          <main className="p-6 md:p-10 space-y-8 max-w-[1400px] mx-auto w-full">
             {/* Title Section */}
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
                <div className="space-y-1">
-                  <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-[1.1]">
-                     Demographics <br /> & Representation
+                  <h2 className="text-3xl md:text-6xl font-black tracking-tight leading-[1.1]">
+                     Demographics <br className="hidden md:block" /> & Representation
                   </h2>
                   <div className="flex items-center gap-2 mt-4">
                      <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 rounded-md border border-emerald-500/20">
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Live Archive Data</span>
+                        <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                        <span className="text-[9px] md:text-[10px] font-black text-emerald-500 uppercase tracking-widest">Live Archive Data</span>
                      </div>
                   </div>
-                  <p className="text-[11px] font-bold text-white/30 uppercase tracking-widest mt-4">Last Update: May 2021 Election Cycle</p>
+                  <p className="text-[9px] md:text-[11px] font-bold text-white/30 uppercase tracking-widest mt-4">Last Update: May 2021 Election Cycle</p>
                </div>
 
                {/* Year Selector - Horizontal Scroll */}
@@ -134,19 +134,19 @@ export function DemographicsPageContent() {
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                   
                   {/* Electorate Evolution */}
-                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] p-8 flex flex-col justify-between group hover:border-white/10 transition-colors">
+                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[32px] p-6 md:p-8 flex flex-col justify-between group hover:border-white/10 transition-colors">
                      <div>
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-4">Electorate Evolution</p>
+                        <p className="text-[9px] md:text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-4">Electorate Evolution</p>
                         <div className="flex items-baseline gap-2">
-                           <h4 className="text-5xl font-black">2.67</h4>
-                           <span className="text-2xl font-black text-white/40">Cr</span>
+                           <h4 className="text-4xl md:text-5xl font-black">2.67</h4>
+                           <span className="text-xl md:text-2xl font-black text-white/40">Cr</span>
                         </div>
-                        <p className="text-sm text-white/40 mt-4 leading-relaxed font-medium">
+                        <p className="text-xs md:text-sm text-white/40 mt-4 leading-relaxed font-medium">
                            Registered voters in 2021, marking a <span className="text-white">5.8% growth</span> from 2016.
                         </p>
                      </div>
-                     <div className="mt-10 flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase tracking-widest">
-                        <Activity className="w-4 h-4" />
+                     <div className="mt-8 md:mt-10 flex items-center gap-2 text-emerald-500 text-[9px] md:text-[10px] font-black uppercase tracking-widest">
+                        <Activity className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         Consistent growth since 1957
                      </div>
                   </div>
@@ -218,29 +218,29 @@ export function DemographicsPageContent() {
                   </div>
 
                   {/* Party-wise Table */}
-                  <div className="lg:col-span-3 bg-[#161b22]/50 border border-white/5 rounded-[32px] p-8 space-y-8">
+                  <div className="lg:col-span-3 bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[32px] p-6 md:p-8 space-y-6 md:space-y-8 overflow-hidden">
                      <div className="space-y-1">
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Gender Breakdown by Party</p>
-                        <h4 className="text-xl font-black tracking-tight">Party-wise Women Fielding (2021)</h4>
+                        <p className="text-[9px] md:text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Gender Breakdown by Party</p>
+                        <h4 className="text-lg md:text-xl font-black tracking-tight">Party-wise Women Fielding (2021)</h4>
                      </div>
-
+ 
                      <div className="overflow-x-auto no-scrollbar">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left min-w-[400px] md:min-w-0">
                            <thead>
                               <tr className="border-b border-white/5 pb-4">
-                                 <th className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4">Party</th>
-                                 <th className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4">Total Contested</th>
-                                 <th className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4">Women Fielded</th>
-                                 <th className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4 text-right">Ratio</th>
+                                 <th className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4">Party</th>
+                                 <th className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4">Total Contested</th>
+                                 <th className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4">Women Fielded</th>
+                                 <th className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em] pb-4 text-right">Ratio</th>
                               </tr>
                            </thead>
                            <tbody className="divide-y divide-white/5">
                               {partyBreakdown.slice(0, 5).map((p, i) => (
                                  <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
-                                    <td className="py-4 font-black text-sm">{p.party}</td>
-                                    <td className="py-4 font-bold text-sm text-white/60">{p.total_contested}</td>
-                                    <td className="py-4 font-bold text-sm text-white/60">{p.women_fielded}</td>
-                                    <td className="py-4 font-black text-sm text-emerald-500 text-right">{((p.women_fielded / p.total_contested) * 100).toFixed(1)}%</td>
+                                    <td className="py-4 font-black text-xs md:text-sm">{p.party}</td>
+                                    <td className="py-4 font-bold text-xs md:text-sm text-white/60">{p.total_contested}</td>
+                                    <td className="py-4 font-bold text-xs md:text-sm text-white/60">{p.women_fielded}</td>
+                                    <td className="py-4 font-black text-xs md:text-sm text-emerald-500 text-right">{((p.women_fielded / p.total_contested) * 100).toFixed(1)}%</td>
                                  </tr>
                               ))}
                            </tbody>

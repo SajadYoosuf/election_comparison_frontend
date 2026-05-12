@@ -180,7 +180,7 @@ export function PartiesPageContent() {
               className="space-y-8"
             >
               {/* Row 1: Full-Width History Chart */}
-              <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] pt-8 md:pt-10 px-6 md:px-10 pb-0 relative overflow-hidden flex flex-col h-[400px] md:h-[500px]">
+              <div className="bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[40px] pt-6 md:pt-10 px-4 md:px-10 pb-0 relative overflow-hidden flex flex-col h-[350px] md:h-[500px]">
                 <div className="flex items-center justify-between mb-6 md:mb-8">
                   <div>
                     <h3 className="text-xl md:text-3xl font-black tracking-tight">Historical Seats Over Time</h3>
@@ -314,30 +314,30 @@ export function PartiesPageContent() {
                   <table className="w-full text-left min-w-[800px]">
                     <thead>
                       <tr className="border-b border-white/5 bg-white/[0.02]">
-                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Constituency</th>
-                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">District</th>
-                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Win Count</th>
-                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Current Streak</th>
-                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Lead Margin (2026)</th>
+                        <th className="px-4 md:px-10 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Constituency</th>
+                        <th className="px-4 md:px-10 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">District</th>
+                        <th className="px-4 md:px-10 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Win Count</th>
+                        <th className="px-4 md:px-10 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em] hidden sm:table-cell">Current Streak</th>
+                        <th className="px-4 md:px-10 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-[0.2em] text-right md:text-left">Lead Margin</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
                       {paginatedStrongholds.map((row, idx) => (
                         <tr key={idx} className="hover:bg-white/[0.02] transition-colors group">
-                          <td className="px-6 md:px-10 py-6 md:py-8">
-                            <span className="text-base md:text-lg font-black tracking-tight group-hover:text-[#4ae176] transition-colors">{row.constituency}</span>
+                          <td className="px-4 md:px-10 py-5 md:py-8">
+                            <span className="text-sm md:text-lg font-black tracking-tight group-hover:text-[#4ae176] transition-colors">{row.constituency}</span>
                           </td>
-                          <td className="px-6 md:px-10 py-6 md:py-8 text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">{row.district}</td>
-                          <td className="px-6 md:px-10 py-6 md:py-8 font-black text-white/80">{row.win_count} / 14</td>
-                          <td className="px-6 md:px-10 py-6 md:py-8">
+                          <td className="px-4 md:px-10 py-5 md:py-8 text-[9px] md:text-sm font-bold text-white/40 uppercase tracking-widest">{row.district}</td>
+                          <td className="px-4 md:px-10 py-5 md:py-8 font-black text-white/80 text-xs md:text-base">{row.win_count} / 14</td>
+                          <td className="px-4 md:px-10 py-5 md:py-8 hidden sm:table-cell">
                             <div className="flex gap-2">
                               {row.streak.map((win: boolean, i: number) => (
                                 <div key={i} className={`w-4 md:w-6 h-1.5 md:h-2 rounded-full ${win ? 'bg-[#4ae176]' : 'bg-rose-500'} opacity-80`} />
                               ))}
                             </div>
                           </td>
-                          <td className="px-6 md:px-10 py-6 md:py-8">
-                            <span className="text-lg md:text-xl font-black text-[#4ae176]">{row.margin > 0 ? `+${row.margin.toLocaleString()}` : (row.margin === 0 ? "N/A" : row.margin.toLocaleString())}</span>
+                          <td className="px-4 md:px-10 py-5 md:py-8 text-right md:text-left">
+                            <span className="text-base md:text-xl font-black text-[#4ae176]">{row.margin > 0 ? `+${row.margin.toLocaleString()}` : (row.margin === 0 ? "N/A" : row.margin.toLocaleString())}</span>
                           </td>
                         </tr>
                       ))}
