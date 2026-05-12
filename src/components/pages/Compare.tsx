@@ -77,23 +77,23 @@ export function ComparePageContent() {
   return (
     <div className="flex-1 flex flex-col bg-[#0D1117] text-white min-h-screen font-sans selection:bg-blue-500/30">
       {/* Header */}
-      <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-50">
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-black tracking-tighter text-white">Compare & Benchmark</h1>
-          <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Advanced Electoral Benchmarking Engine</p>
+      <header className="h-auto py-4 md:h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between px-4 md:px-10 sticky top-0 z-50 gap-4">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <h1 className="text-xl md:text-2xl font-black tracking-tighter text-white">Compare & Benchmark</h1>
+          <p className="text-[9px] md:text-[10px] font-black text-white/40 uppercase tracking-widest">Advanced Electoral Benchmarking Engine</p>
         </div>
         
-        <div className="bg-white/5 p-1 rounded-2xl border border-white/10 flex items-center gap-1">
-          <ModeTab active={mode === 'year-vs-year'} onClick={() => setMode('year-vs-year')} label="Year vs Year" />
-          <ModeTab active={mode === 'constituency-vs-constituency'} onClick={() => setMode('constituency-vs-constituency')} label="Constituency vs Constituency" />
-          <ModeTab active={mode === 'candidate-vs-candidate'} onClick={() => setMode('candidate-vs-candidate')} label="Candidate vs Candidate" />
+        <div className="bg-white/5 p-1 rounded-2xl border border-white/10 flex items-center gap-1 overflow-x-auto max-w-full no-scrollbar">
+          <ModeTab active={mode === 'year-vs-year'} onClick={() => setMode('year-vs-year')} label="Years" />
+          <ModeTab active={mode === 'constituency-vs-constituency'} onClick={() => setMode('constituency-vs-constituency')} label="Constituencies" />
+          <ModeTab active={mode === 'candidate-vs-candidate'} onClick={() => setMode('candidate-vs-candidate')} label="Candidates" />
         </div>
       </header>
 
-      <main className="p-10 space-y-10 max-w-[1400px] mx-auto w-full">
+      <main className="p-4 md:p-10 space-y-8 md:space-y-10 max-w-[1400px] mx-auto w-full">
         {/* Selector Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 items-center bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 shadow-2xl">
-          <div className="lg:col-span-3 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 items-center bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-10 shadow-2xl">
+          <div className="lg:col-span-3 space-y-4 md:space-y-6">
             <div className="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">
                <Zap className="w-3.5 h-3.5" /> Baseline Selection
             </div>
@@ -123,13 +123,13 @@ export function ComparePageContent() {
           <div className="flex items-center justify-center">
             <button 
               onClick={handleCompare}
-              className="w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center border-4 border-[#0D1117] shadow-xl hover:scale-110 transition-all active:scale-95 group"
+              className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center border-4 border-[#0D1117] shadow-xl hover:scale-110 transition-all active:scale-95 group"
             >
-              <GitCompare className="w-6 h-6 text-white group-hover:rotate-180 transition-transform duration-500" />
+              <GitCompare className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:rotate-180 transition-transform duration-500" />
             </button>
           </div>
 
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-4 md:space-y-6">
             <div className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">
                <Zap className="w-3.5 h-3.5" /> Comparison Selection
             </div>
@@ -181,7 +181,7 @@ function ModeTab({ active, onClick, label }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+      className={`px-4 md:px-6 py-2 md:py-2.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
         active ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'
       }`}
     >
@@ -235,7 +235,7 @@ function SearchableInput({ value, onChange, placeholder, type, icon }: any) {
         onFocus={() => setShow(true)}
         onBlur={() => setTimeout(() => setShow(false), 200)}
         placeholder={placeholder}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-[20px] pl-16 pr-6 py-5 text-xl font-black text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all relative z-0"
+        className="w-full bg-white/[0.03] border border-white/10 rounded-[16px] md:rounded-[20px] pl-14 md:pl-16 pr-4 md:pr-6 py-4 md:py-5 text-lg md:text-xl font-black text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all relative z-0"
       />
       
       {show && (suggestions.length > 0 || loading) && (
@@ -283,7 +283,7 @@ function SelectBox({ value, onChange, options, icon }: any) {
       <select 
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-[20px] pl-16 pr-10 py-5 text-xl font-black text-white focus:outline-none focus:border-blue-500/50 transition-all cursor-pointer"
+        className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-[16px] md:rounded-[20px] pl-14 md:pl-16 pr-10 py-4 md:py-5 text-lg md:text-xl font-black text-white focus:outline-none focus:border-blue-500/50 transition-all cursor-pointer"
       >
         {options.map((o: any) => <option key={o.value} value={o.value} className="bg-[#0D1117]">{o.label}</option>)}
       </select>
@@ -367,14 +367,14 @@ function ComparisonContent({ mode, data }: any) {
 
   return (
     <div className="space-y-10">
-      <div className="bg-[#161b22]/30 border border-white/5 rounded-[40px] overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-[#161b22]/30 border border-white/5 rounded-[32px] md:rounded-[40px] overflow-hidden overflow-x-auto shadow-2xl">
+        <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
-            <tr className="border-b border-white/5">
-              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Metric Analysis</th>
-              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{baseline.year || baseline.name} Results</th>
-              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{comparison.year || comparison.name} Results</th>
-              <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Delta (Δ)</th>
+            <tr className="border-b border-white/5 bg-white/[0.02]">
+              <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Metric Analysis</th>
+              <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{baseline.year || baseline.name} Results</th>
+              <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{comparison.year || comparison.name} Results</th>
+              <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Delta (Δ)</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -385,7 +385,7 @@ function ComparisonContent({ mode, data }: any) {
               
               return (
                 <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
-                  <td className="px-10 py-8">
+                  <td className="px-6 md:px-10 py-6 md:py-8">
                     <div className="flex items-center gap-4">
                       <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-blue-500 transition-colors">
                         {m.icon}
@@ -393,13 +393,13 @@ function ComparisonContent({ mode, data }: any) {
                       <span className="text-sm font-black tracking-tight">{m.label}</span>
                     </div>
                   </td>
-                  <td className="px-10 py-8 text-xl font-black">
+                  <td className="px-6 md:px-10 py-6 md:py-8 text-lg md:text-xl font-black">
                     {m.format ? m.format(v1) : v1}{m.suffix}
                   </td>
-                  <td className="px-10 py-8 text-xl font-black">
+                  <td className="px-6 md:px-10 py-6 md:py-8 text-lg md:text-xl font-black">
                     {m.format ? m.format(v2) : v2}{m.suffix}
                   </td>
-                  <td className="px-10 py-8">
+                  <td className="px-6 md:px-10 py-6 md:py-8">
                     <DeltaBadge value={delta} isPerc={m.suffix === '%'} />
                   </td>
                 </tr>
@@ -410,15 +410,15 @@ function ComparisonContent({ mode, data }: any) {
       </div>
       
       {/* Footer Insight */}
-      <div className="bg-gradient-to-br from-blue-600/20 to-transparent border border-blue-500/10 rounded-[40px] p-10 flex items-center justify-between">
-         <div className="space-y-4">
-            <h3 className="text-2xl font-black tracking-tight">Electoral Benchmarking Insights</h3>
-            <p className="text-white/40 text-sm max-w-2xl leading-relaxed">
+      <div className="bg-gradient-to-br from-blue-600/20 to-transparent border border-blue-500/10 rounded-[32px] md:rounded-[40px] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+         <div className="space-y-3 md:space-y-4 text-center md:text-left">
+            <h3 className="text-xl md:text-2xl font-black tracking-tight">Electoral Benchmarking Insights</h3>
+            <p className="text-white/40 text-xs md:text-sm max-w-2xl leading-relaxed">
                This side-by-side analysis highlights the critical performance shifts in {mode.replace(/-/g, ' ')}. 
                The comparative delta between the selected items provides a data-driven overview of historical trends and success patterns.
             </p>
          </div>
-         <Download className="w-12 h-12 text-white/10 hover:text-white transition-all cursor-pointer" />
+         <Download className="w-10 h-10 md:w-12 md:h-12 text-white/10 hover:text-white transition-all cursor-pointer" />
       </div>
     </div>
   );

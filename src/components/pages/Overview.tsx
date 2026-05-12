@@ -162,8 +162,8 @@ export function OverviewPageContent() {
   return (
     <div className="flex-1 flex flex-col bg-[#08090a] min-h-screen text-white font-sans overflow-x-hidden">
       {/* Top Navigation Bar */}
-      <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-50">
-        <div className="flex items-center gap-6 flex-1">
+      <header className="h-auto py-4 md:h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between px-4 md:px-10 sticky top-0 z-50 gap-4">
+        <div className="flex items-center gap-4 w-full md:flex-1">
           <div className="relative w-full max-w-xl group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[#4ae176] transition-colors" />
             <input
@@ -174,28 +174,27 @@ export function OverviewPageContent() {
           </div>
         </div>
 
-        <div className="flex items-center gap-8">
+        <div className="flex items-center justify-between w-full md:w-auto md:gap-8">
           <button
             onClick={() => setLang(lang === 'en' ? 'ml' : 'en')}
             className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#4ae176] hover:text-black transition-all"
           >
             {lang === 'en' ? 'മലയാളം' : 'English'}
           </button>
-          <h2 className="text-xl font-black tracking-tight">Kerala Assemply ELection </h2>
-
+          <h2 className="text-sm md:text-xl font-black tracking-tight text-right md:text-left">Kerala Election</h2>
         </div>
       </header>
 
       {/* Content Area */}
-      <main className="p-10 space-y-10 max-w-[1600px] mx-auto w-full">
+      <main className="p-4 md:p-10 space-y-6 md:space-y-10 max-w-[1600px] mx-auto w-full">
         {/* Page Header */}
-        <div className="flex items-end justify-between">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
-            <h1 className="text-4xl font-black tracking-tight">{t.title}</h1>
-            <p className="text-sm text-white/40 font-medium">{t.subtitle}</p>
+            <h1 className="text-2xl md:text-4xl font-black tracking-tight">{t.title}</h1>
+            <p className="text-xs md:text-sm text-white/40 font-medium">{t.subtitle}</p>
           </div>
 
-          <div className="relative group">
+          <div className="relative group w-full md:w-auto">
             <YearDropdown selected={activeYear} onSelect={setActiveYear} t={t} />
           </div>
         </div>
@@ -237,9 +236,9 @@ export function OverviewPageContent() {
         {/* Middle Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Alliance Share & Trend */}
-          <div className="lg:col-span-8 bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 space-y-12">
+          <div className="lg:col-span-8 bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[40px] p-6 md:p-10 space-y-8 md:space-y-12">
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-black">{t.seatShare}</h3>
+              <h3 className="text-xl md:text-2xl font-black">{t.seatShare}</h3>
               <button className="text-white/20 hover:text-white transition-colors">
                 <Download className="w-5 h-5" />
               </button>
@@ -270,9 +269,9 @@ export function OverviewPageContent() {
 
           {/* Swing Seats & Highlights */}
           <div className="lg:col-span-4 flex flex-col gap-8">
-            <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-8 flex-1 space-y-8">
+            <div className="bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex-1 space-y-6 md:space-y-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-black">{t.swingSeats}</h3>
+                <h3 className="text-xl md:text-2xl font-black">{t.swingSeats}</h3>
                 <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black rounded-full uppercase tracking-tighter">{swingSeats.length} {t.seatsChanged}</span>
               </div>
 
@@ -348,9 +347,9 @@ export function OverviewPageContent() {
         </AnimatePresence>
 
         {/* Table Section - Biggest Wins */}
-        <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] overflow-hidden">
-          <div className="p-10 flex items-center justify-between border-b border-white/5">
-            <h3 className="text-3xl font-black tracking-tight">{t.biggestWins}</h3>
+        <div className="bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[40px] overflow-hidden">
+          <div className="p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 gap-4">
+            <h3 className="text-xl md:text-3xl font-black tracking-tight">{t.biggestWins}</h3>
             <div className="flex items-center gap-4">
               <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{activeYear} {t.election}</span>
             </div>
@@ -487,20 +486,20 @@ function StatCard({ title, value, trend, icon, isHighlight = false, isDown = fal
 
   return (
     <div className={cn(
-      "bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 relative overflow-hidden group hover:border-[#4ae176]/30 transition-all shadow-2xl",
+      "bg-[#161b22]/50 border border-white/5 rounded-[24px] md:rounded-[40px] p-6 md:p-10 relative overflow-hidden group hover:border-[#4ae176]/30 transition-all shadow-2xl",
       isHighlight && "ring-1 ring-[#4ae176]/20 bg-gradient-to-br from-[#161b22]/50 to-[#4ae176]/5"
     )}>
-      <div className="flex justify-between items-start mb-6">
-        <div className="space-y-2">
+      <div className="flex justify-between items-start mb-4 md:mb-6">
+        <div className="space-y-1 md:space-y-2">
           <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">{title}</p>
           <div className="flex items-baseline gap-2">
-            <h4 className="text-5xl font-black tracking-tight">{value}</h4>
-            <span className={`text-[10px] font-black uppercase ${isDown ? 'text-rose-500' : 'text-[#4ae176]'}`}>
+            <h4 className="text-3xl md:text-5xl font-black tracking-tight">{value}</h4>
+            <span className={`text-[9px] md:text-[10px] font-black uppercase ${isDown ? 'text-rose-500' : 'text-[#4ae176]'}`}>
               {isDown ? '↓' : '↑'} {trend}
             </span>
           </div>
         </div>
-        <div className="p-4 bg-white/5 rounded-2xl group-hover:bg-[#4ae176]/10 group-hover:scale-110 transition-all duration-500">
+        <div className="p-3 md:p-4 bg-white/5 rounded-2xl group-hover:bg-[#4ae176]/10 group-hover:scale-110 transition-all duration-500">
           {icon}
         </div>
       </div>

@@ -30,6 +30,8 @@ export function PartiesPageContent() {
   const [strongholds, setStrongholds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const loadInitial = async () => {
@@ -68,17 +70,24 @@ export function PartiesPageContent() {
       }
     };
     loadDetails();
+    setCurrentPage(1);
   }, [selectedParty]);
+
+  const totalPages = Math.ceil(strongholds.length / itemsPerPage);
+  const paginatedStrongholds = strongholds.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="flex-1 flex flex-col bg-[#08090a] text-white min-h-screen font-sans">
       {/* Header */}
-      <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-50">
-        <div className="flex items-center gap-12 flex-1">
-
+      <header className="h-auto py-4 md:h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between px-4 md:px-10 sticky top-0 z-50 gap-4">
+        <div className="flex items-center gap-12 flex-1 w-full">
+          <h2 className="text-lg md:text-xl font-black tracking-tight text-white/80">Parties Analytics</h2>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 md:gap-6 ml-auto md:ml-0">
           <button className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-colors">
             <Bell className="w-5 h-5 text-white/60" />
             <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#4ae176] rounded-full border-2 border-[#0D1117]" />
@@ -90,30 +99,29 @@ export function PartiesPageContent() {
       </header>
 
       {/* Main Content */}
-      <main className="p-10 space-y-12 max-w-[1600px] mx-auto w-full">
+      <main className="p-4 md:p-10 space-y-8 md:space-y-12 max-w-[1600px] mx-auto w-full">
         {/* Breadcrumbs & Title */}
         <div className="space-y-4">
-          <div className="flex items-center gap-3 text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">
+          <div className="flex items-center gap-3 text-[9px] md:text-[10px] font-black text-white/40 uppercase tracking-[0.1em] md:tracking-[0.2em]">
             <span>Parties</span>
             <ChevronRight className="w-3 h-3" />
             <span className="text-[#4ae176]">Analysis Hub</span>
           </div>
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2">
-              <h1 className="text-4xl font-black tracking-tight">Party Performance Dynamics</h1>
-              <p className="text-sm text-white/40 max-w-2xl">
+              <h1 className="text-2xl md:text-4xl font-black tracking-tight">Party Performance Dynamics</h1>
+              <p className="text-xs md:text-sm text-white/40 max-w-2xl">
                 Deep architectural analysis of party performance across the 140 constituencies of Kerala.
                 Longitudinal data tracking from 1957 to 2021.
               </p>
             </div>
-
           </div>
         </div>
 
         {/* Major Entities Grid */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-black">Major Political Entities</h3>
+            <h3 className="text-xl md:text-2xl font-black">Major Political Entities</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
@@ -172,11 +180,11 @@ export function PartiesPageContent() {
               className="space-y-8"
             >
               {/* Row 1: Full-Width History Chart */}
-              <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] pt-10 px-10 pb-0 relative overflow-hidden flex flex-col h-[500px]">
-                <div className="flex items-center justify-between mb-8">
+              <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] pt-8 md:pt-10 px-6 md:px-10 pb-0 relative overflow-hidden flex flex-col h-[400px] md:h-[500px]">
+                <div className="flex items-center justify-between mb-6 md:mb-8">
                   <div>
-                    <h3 className="text-3xl font-black tracking-tight">Historical Seats Over Time</h3>
-                    <p className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-1">
+                    <h3 className="text-xl md:text-3xl font-black tracking-tight">Historical Seats Over Time</h3>
+                    <p className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-widest mt-1">
                       {selectedParty} Seat Share Performance (1957 – 2026)
                     </p>
                   </div>
@@ -226,20 +234,20 @@ export function PartiesPageContent() {
               {/* Row 2: Milestone Cards in 3 Columns */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {/* Peak Performance */}
-                <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-8 group hover:border-[#4ae176]/30 transition-all flex flex-col justify-between">
-                  <div className="flex items-center justify-between mb-8">
+                <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-8 group hover:border-[#4ae176]/30 transition-all flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-6 md:mb-8">
                     <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Peak Performance</span>
                     <Award className="w-5 h-5 text-[#4ae176]" />
                   </div>
                   <div>
-                    <h2 className="text-4xl font-black tracking-tight mb-6">{performance?.peak?.year} Election</h2>
-                    <div className="flex items-center gap-6 bg-white/5 p-6 rounded-3xl">
+                    <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-4 md:mb-6">{performance?.peak?.year} Election</h2>
+                    <div className="flex items-center gap-4 md:gap-6 bg-white/5 p-4 md:p-6 rounded-3xl">
                       <div className="text-center">
-                        <p className="text-4xl font-black text-[#4ae176]">{performance?.peak?.seats}</p>
-                        <p className="text-[9px] font-black text-white/20 uppercase">Total Seats</p>
+                        <p className="text-2xl md:text-4xl font-black text-[#4ae176]">{performance?.peak?.seats}</p>
+                        <p className="text-[8px] md:text-[9px] font-black text-white/20 uppercase">Total Seats</p>
                       </div>
                       <div className="h-10 w-px bg-white/10" />
-                      <p className="text-xs font-medium text-white/60 leading-relaxed">
+                      <p className="text-[11px] md:text-xs font-medium text-white/60 leading-relaxed">
                         {selectedParty} individual contribution: <span className="text-white font-black">{performance?.peak?.seats} Seats</span>.
                       </p>
                     </div>
@@ -247,20 +255,20 @@ export function PartiesPageContent() {
                 </div>
 
                 {/* Lowest Point */}
-                <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-8 group hover:border-rose-500/30 transition-all flex flex-col justify-between">
-                  <div className="flex items-center justify-between mb-8">
+                <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-8 group hover:border-rose-500/30 transition-all flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-6 md:mb-8">
                     <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Lowest Point</span>
                     <Flame className="w-5 h-5 text-rose-500" />
                   </div>
                   <div>
-                    <h2 className="text-4xl font-black tracking-tight mb-6">{performance?.lowest?.year} Election</h2>
-                    <div className="flex items-center gap-6 bg-white/5 p-6 rounded-3xl">
+                    <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-4 md:mb-6">{performance?.lowest?.year} Election</h2>
+                    <div className="flex items-center gap-4 md:gap-6 bg-white/5 p-4 md:p-6 rounded-3xl">
                       <div className="text-center">
-                        <p className="text-4xl font-black text-rose-500">{performance?.lowest?.seats}</p>
-                        <p className="text-[9px] font-black text-white/20 uppercase">Total Seats</p>
+                        <p className="text-2xl md:text-4xl font-black text-rose-500">{performance?.lowest?.seats}</p>
+                        <p className="text-[8px] md:text-[9px] font-black text-white/20 uppercase">Total Seats</p>
                       </div>
                       <div className="h-10 w-px bg-white/10" />
-                      <p className="text-xs font-medium text-white/60 leading-relaxed">
+                      <p className="text-[11px] md:text-xs font-medium text-white/60 leading-relaxed">
                         Historic wave against {selectedParty} resulting in <span className="text-white font-black">{performance?.lowest?.seats} Seats</span>.
                       </p>
                     </div>
@@ -268,15 +276,15 @@ export function PartiesPageContent() {
                 </div>
 
                 {/* Retention Metric */}
-                <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-8 group hover:border-[#4ae176]/30 transition-all flex flex-col justify-between">
-                  <div className="flex items-center justify-between mb-8">
+                <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-8 group hover:border-[#4ae176]/30 transition-all flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-6 md:mb-8">
                     <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Avg. Seat Retention</span>
                     <History className="w-4 h-4 text-[#4ae176]" />
                   </div>
                   <div className="space-y-6">
                     <div className="flex items-end justify-between">
                       <div>
-                        <p className="text-5xl font-black">{performance?.avg_seat_retention}%</p>
+                        <p className="text-3xl md:text-5xl font-black">{performance?.avg_seat_retention}%</p>
                         <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mt-2">2021 → 2026</p>
                       </div>
                     </div>
@@ -288,7 +296,7 @@ export function PartiesPageContent() {
                         className="h-full bg-gradient-to-r from-[#4ae176] to-emerald-500 shadow-[0_0_15px_rgba(74,225,118,0.5)]"
                       />
                     </div>
-                    <p className="text-xs text-white/40 font-medium leading-relaxed">
+                    <p className="text-[11px] md:text-xs text-white/40 font-medium leading-relaxed">
                       Calculated based on {selectedParty}'s ability to defend seats won in the 2021 assembly election during the 2026 cycle.
                     </p>
                   </div>
@@ -297,45 +305,98 @@ export function PartiesPageContent() {
 
               {/* Strongholds Table */}
               <div className="space-y-8">
-                <div className="flex items-end justify-between">
-                  <h3 className="text-3xl font-black tracking-tight">Primary Strongholds</h3>
-                  <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Calculated across all elections</span>
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                  <h3 className="text-xl md:text-3xl font-black tracking-tight">Primary Strongholds</h3>
+                  <span className="text-[9px] md:text-[10px] font-black text-white/20 uppercase tracking-widest">Calculated across all elections</span>
                 </div>
 
-                <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] overflow-hidden shadow-2xl">
-                  <table className="w-full text-left">
+                <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] overflow-x-auto shadow-2xl">
+                  <table className="w-full text-left min-w-[800px]">
                     <thead>
                       <tr className="border-b border-white/5 bg-white/[0.02]">
-                        <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Constituency</th>
-                        <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">District</th>
-                        <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Win Count</th>
-                        <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Current Streak</th>
-                        <th className="px-10 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Lead Margin (2026)</th>
+                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Constituency</th>
+                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">District</th>
+                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Win Count</th>
+                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Current Streak</th>
+                        <th className="px-6 md:px-10 py-4 md:py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Lead Margin (2026)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {strongholds.map((row, idx) => (
+                      {paginatedStrongholds.map((row, idx) => (
                         <tr key={idx} className="hover:bg-white/[0.02] transition-colors group">
-                          <td className="px-10 py-8">
-                            <span className="text-lg font-black tracking-tight group-hover:text-[#4ae176] transition-colors">{row.constituency}</span>
+                          <td className="px-6 md:px-10 py-6 md:py-8">
+                            <span className="text-base md:text-lg font-black tracking-tight group-hover:text-[#4ae176] transition-colors">{row.constituency}</span>
                           </td>
-                          <td className="px-10 py-8 text-sm font-bold text-white/40 uppercase tracking-widest">{row.district}</td>
-                          <td className="px-10 py-8 font-black text-white/80">{row.win_count} / 14</td>
-                          <td className="px-10 py-8">
+                          <td className="px-6 md:px-10 py-6 md:py-8 text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">{row.district}</td>
+                          <td className="px-6 md:px-10 py-6 md:py-8 font-black text-white/80">{row.win_count} / 14</td>
+                          <td className="px-6 md:px-10 py-6 md:py-8">
                             <div className="flex gap-2">
                               {row.streak.map((win: boolean, i: number) => (
-                                <div key={i} className={`w-6 h-2 rounded-full ${win ? 'bg-[#4ae176]' : 'bg-rose-500'} opacity-80`} />
+                                <div key={i} className={`w-4 md:w-6 h-1.5 md:h-2 rounded-full ${win ? 'bg-[#4ae176]' : 'bg-rose-500'} opacity-80`} />
                               ))}
                             </div>
                           </td>
-                          <td className="px-10 py-8">
-                            <span className="text-xl font-black text-[#4ae176]">{row.margin > 0 ? `+${row.margin.toLocaleString()}` : (row.margin === 0 ? "N/A" : row.margin.toLocaleString())}</span>
+                          <td className="px-6 md:px-10 py-6 md:py-8">
+                            <span className="text-lg md:text-xl font-black text-[#4ae176]">{row.margin > 0 ? `+${row.margin.toLocaleString()}` : (row.margin === 0 ? "N/A" : row.margin.toLocaleString())}</span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-1 md:gap-2 pt-6">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-20 hover:bg-white/10 transition-colors"
+                    >
+                      <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                      {(() => {
+                        const rangeWithDots: (number | string)[] = [];
+                        const delta = 1;
+                        const left = currentPage - delta;
+                        const right = currentPage + delta + 1;
+                        let l: number | undefined;
+
+                        for (let i = 1; i <= totalPages; i++) {
+                          if (i === 1 || i === totalPages || (i >= left && i < right)) {
+                            if (l) {
+                              if (i - l === 2) rangeWithDots.push(l + 1);
+                              else if (i - l !== 1) rangeWithDots.push('...');
+                            }
+                            rangeWithDots.push(i);
+                            l = i;
+                          }
+                        }
+
+                        return rangeWithDots.map((page, i) => (
+                          <button
+                            key={i}
+                            onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                            disabled={typeof page !== 'number'}
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl font-black text-[10px] md:text-xs transition-all ${currentPage === page ? 'bg-[#4ae176] text-[#08090a]' : (typeof page === 'number' ? 'bg-white/5 border border-white/10 text-white/40 hover:text-white' : 'text-white/20 cursor-default')}`}
+                          >
+                            {page}
+                          </button>
+                        ));
+                      })()}
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-20 hover:bg-white/10 transition-colors"
+                    >
+                      <ChevronRightIcon className="w-3 h-3 md:w-4 md:h-4" />
+                    </button>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}

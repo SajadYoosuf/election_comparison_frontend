@@ -116,8 +116,8 @@ export function ConstituenciesPageContent() {
   return (
     <div className="flex-1 flex flex-col bg-[#08090a] text-white min-h-screen font-sans overflow-x-hidden">
       {/* Header */}
-      <header className="h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex items-center justify-between px-10 sticky top-0 z-50">
-        <div className="flex items-center gap-6 flex-1">
+      <header className="h-auto py-4 md:h-20 border-b border-white/5 bg-[#0D1117]/80 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between px-4 md:px-10 sticky top-0 z-50 gap-4">
+        <div className="flex items-center gap-4 md:gap-6 flex-1 w-full">
           {view === "detail" && (
             <button
               onClick={() => setView("list")}
@@ -126,7 +126,7 @@ export function ConstituenciesPageContent() {
               <ArrowLeft className="w-5 h-5" />
             </button>
           )}
-          <div className="relative flex-1 max-w-xl group">
+          <div className="relative flex-1 w-full max-w-xl group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-blue-500 transition-colors" />
             <input
               type="text"
@@ -153,7 +153,7 @@ export function ConstituenciesPageContent() {
         </div>
       </header>
 
-      <main className="p-10 max-w-[1600px] mx-auto w-full">
+      <main className="p-4 md:p-10 max-w-[1600px] mx-auto w-full">
         <AnimatePresence mode="wait">
           {view === "list" ? (
             <motion.div
@@ -164,8 +164,8 @@ export function ConstituenciesPageContent() {
               className="space-y-10"
             >
               <div className="flex flex-col gap-2">
-                <h1 className="text-4xl font-black tracking-tight">Constituencies</h1>
-                <p className="text-white/40 text-sm font-medium">Explore detailed electoral data for all 140 constituencies of Kerala.</p>
+                <h1 className="text-2xl md:text-4xl font-black tracking-tight">Constituencies</h1>
+                <p className="text-white/40 text-xs md:text-sm font-medium">Explore detailed electoral data for all 140 constituencies of Kerala.</p>
               </div>
 
               {loading ? (
@@ -184,11 +184,11 @@ export function ConstituenciesPageContent() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.02 }}
                         onClick={() => openDetail(c.name)}
-                        className="group bg-[#161b22]/40 border border-white/5 rounded-[32px] p-8 hover:bg-[#161b22]/80 hover:border-blue-500/30 transition-all cursor-pointer relative overflow-hidden"
+                        className="group bg-[#161b22]/40 border border-white/5 rounded-[24px] md:rounded-[32px] p-6 md:p-8 hover:bg-[#161b22]/80 hover:border-blue-500/30 transition-all cursor-pointer relative overflow-hidden"
                       >
-                        <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                            <ArrowLeft className="w-4 h-4 rotate-180" />
+                        <div className="absolute top-0 right-0 p-6 md:p-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                            <ArrowLeft className="w-3 h-3 md:w-4 md:h-4 rotate-180" />
                           </div>
                         </div>
 
@@ -217,43 +217,62 @@ export function ConstituenciesPageContent() {
 
                   {/* Pagination Controls */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-center gap-2 py-10">
+                    <div className="flex items-center justify-center gap-1 md:gap-2 py-6 md:py-10 flex-wrap">
                       <button
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
-                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-20 hover:bg-white/10 transition-colors"
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-20 hover:bg-white/10 transition-colors"
                       >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
                       </button>
 
                       <div className="flex items-center gap-1">
-                        {[...Array(totalPages)].map((_, i) => {
-                          const page = i + 1;
-                          // Only show nearby pages if there are many
-                          if (totalPages > 7) {
-                            if (page !== 1 && page !== totalPages && Math.abs(page - currentPage) > 1) {
-                              if (page === 2 || page === totalPages - 1) return <span key={page} className="px-2 text-white/20">...</span>;
-                              return null;
+                        {(() => {
+                          const pages = [];
+                          const delta = 1;
+                          const left = currentPage - delta;
+                          const right = currentPage + delta + 1;
+                          const range = [];
+                          const rangeWithDots = [];
+                          let l;
+
+                          for (let i = 1; i <= totalPages; i++) {
+                            if (i === 1 || i === totalPages || (i >= left && i < right)) {
+                              range.push(i);
                             }
                           }
-                          return (
+
+                          for (const i of range) {
+                            if (l) {
+                              if (i - l === 2) {
+                                rangeWithDots.push(l + 1);
+                              } else if (i - l !== 1) {
+                                rangeWithDots.push('...');
+                              }
+                            }
+                            rangeWithDots.push(i);
+                            l = i;
+                          }
+
+                          return rangeWithDots.map((page, i) => (
                             <button
-                              key={page}
-                              onClick={() => setCurrentPage(page)}
-                              className={`w-10 h-10 rounded-xl font-black text-xs transition-all ${currentPage === page ? 'bg-blue-600 text-white' : 'bg-white/5 border border-white/10 text-white/40 hover:text-white'}`}
+                              key={i}
+                              onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                              disabled={typeof page !== 'number'}
+                              className={`w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl font-black text-[10px] md:text-xs transition-all ${currentPage === page ? 'bg-blue-600 text-white' : (typeof page === 'number' ? 'bg-white/5 border border-white/10 text-white/40 hover:text-white' : 'text-white/20 cursor-default')}`}
                             >
                               {page}
                             </button>
-                          );
-                        })}
+                          ));
+                        })()}
                       </div>
 
                       <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
-                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-20 hover:bg-white/10 transition-colors"
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/5 border border-white/10 flex items-center justify-center disabled:opacity-20 hover:bg-white/10 transition-colors"
                       >
-                        <ArrowLeft className="w-4 h-4 rotate-180" />
+                        <ArrowLeft className="w-3 h-3 md:w-4 md:h-4 rotate-180" />
                       </button>
                     </div>
                   )}
@@ -273,7 +292,7 @@ export function ConstituenciesPageContent() {
               ) : data && (
                 <div className="space-y-10">
                   {/* Summary Section */}
-                  <div className="flex flex-col lg:flex-row gap-10 items-start justify-between">
+                  <div className="flex flex-col lg:flex-row gap-8 md:gap-10 items-start justify-between">
                     <div className="space-y-4 max-w-3xl">
                       <div className="flex items-center gap-4">
                         <span className="px-3 py-1 bg-[#4ae176]/10 text-[#4ae176] text-[10px] font-black rounded-full uppercase tracking-widest">
@@ -283,18 +302,18 @@ export function ConstituenciesPageContent() {
                           District: {data.summary.district}
                         </span>
                       </div>
-                      <h1 className="text-7xl font-black tracking-tighter text-white">
+                      <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-white">
                         {data.summary.name}
                       </h1>
-                      <p className="text-lg text-white/60 leading-relaxed font-medium">
+                      <p className="text-base md:text-lg text-white/60 leading-relaxed font-medium">
                         {data.summary.description}
                       </p>
                     </div>
 
-                    <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 min-w-[350px] relative overflow-hidden group hover:border-blue-500/30 transition-all">
+                    <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-10 w-full lg:min-w-[350px] relative overflow-hidden group hover:border-blue-500/30 transition-all">
                       <div className="relative z-10">
                         <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-2">Total Electorate</p>
-                        <h2 className="text-5xl font-black tracking-tight mb-6">
+                        <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-6">
                           {data.summary.total_electorate.toLocaleString()}
                         </h2>
                         <div className="space-y-2">
@@ -305,7 +324,7 @@ export function ConstituenciesPageContent() {
                               className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400"
                             />
                           </div>
-                          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest text-right">
+                          <p className="text-[9px] md:text-[10px] font-black text-emerald-500 uppercase tracking-widest text-right">
                             {data.summary.turnout} Historical Turnout
                           </p>
                         </div>
@@ -314,7 +333,7 @@ export function ConstituenciesPageContent() {
                   </div>
 
                   {/* Alliance Timeline */}
-                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 space-y-8">
+                  <div className="bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-10 space-y-6 md:space-y-8">
                     <h3 className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Alliance Control Timeline (1977 — 2021)</h3>
                     <div className="relative h-12 w-full flex rounded-2xl overflow-hidden shadow-2xl">
                       {data.alliance_timeline.map((item: any, i: number) => (
@@ -338,10 +357,10 @@ export function ConstituenciesPageContent() {
                   {/* Grid: Charts & History */}
                   <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                     {/* Margin Trend Chart */}
-                    <div className="lg:col-span-2 bg-[#161b22]/50 border border-white/5 rounded-[40px] p-10 flex flex-col">
-                      <div className="flex items-center justify-between mb-10">
-                        <h3 className="text-2xl font-black tracking-tight">Victory Margin Trend</h3>
-                        <TrendingUp className="w-6 h-6 text-emerald-500" />
+                    <div className="lg:col-span-2 bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-10 flex flex-col">
+                      <div className="flex items-center justify-between mb-8 md:mb-10">
+                        <h3 className="text-xl md:text-2xl font-black tracking-tight">Victory Margin Trend</h3>
+                        <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
                       </div>
 
                       <div className="flex-1 min-h-[300px]">
@@ -380,39 +399,39 @@ export function ConstituenciesPageContent() {
                     </div>
 
                     {/* History Table */}
-                    <div className="lg:col-span-3 bg-[#161b22]/50 border border-white/5 rounded-[40px] flex flex-col overflow-hidden">
-                      <div className="p-10 flex items-center justify-between border-b border-white/5">
-                        <h3 className="text-2xl font-black tracking-tight">Full Election History</h3>
+                    <div className="lg:col-span-3 bg-[#161b22]/50 border border-white/5 rounded-[32px] md:rounded-[40px] flex flex-col overflow-hidden">
+                      <div className="p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 gap-4">
+                        <h3 className="text-xl md:text-2xl font-black tracking-tight">Full Election History</h3>
                         <button className="flex items-center gap-2 text-[10px] font-black text-white/40 uppercase tracking-widest hover:text-white transition-colors">
                           Export Data <Download className="w-3 h-3" />
                         </button>
                       </div>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left min-w-[600px]">
                           <thead>
                             <tr className="border-b border-white/5 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">
-                              <th className="px-10 py-6">Year</th>
-                              <th className="px-10 py-6">Winner</th>
-                              <th className="px-10 py-6">Party</th>
-                              <th className="px-10 py-6 text-right">Votes</th>
-                              <th className="px-10 py-6">Runner-up</th>
-                              <th className="px-10 py-6 text-right">Margin</th>
+                              <th className="px-6 md:px-10 py-4 md:py-6">Year</th>
+                              <th className="px-6 md:px-10 py-4 md:py-6">Winner</th>
+                              <th className="px-6 md:px-10 py-4 md:py-6">Party</th>
+                              <th className="px-6 md:px-10 py-4 md:py-6 text-right">Votes</th>
+                              <th className="px-6 md:px-10 py-4 md:py-6">Runner-up</th>
+                              <th className="px-6 md:px-10 py-4 md:py-6 text-right">Margin</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-white/5">
                             {data.election_history.map((row: any, i: number) => (
                               <tr key={i} className="hover:bg-white/[0.01] transition-colors group">
-                                <td className="px-10 py-8 text-sm font-black text-white">{row.year}</td>
-                                <td className="px-10 py-8 text-sm font-bold text-white/80">{row.winner}</td>
-                                <td className="px-10 py-8">
+                                <td className="px-6 md:px-10 py-6 md:py-8 text-sm font-black text-white">{row.year}</td>
+                                <td className="px-6 md:px-10 py-6 md:py-8 text-sm font-bold text-white/80">{row.winner}</td>
+                                <td className="px-6 md:px-10 py-6 md:py-8">
                                   <div className="flex items-center gap-2">
                                     <div className={`w-2 h-2 rounded-full ${row.alliance === 'LDF' ? 'bg-[#E11D48]' : 'bg-[#2563EB]'}`} />
                                     <span className="text-[10px] font-black uppercase tracking-widest">{row.party}</span>
                                   </div>
                                 </td>
-                                <td className="px-10 py-8 text-right font-mono text-xs">{row.votes.toLocaleString()}</td>
-                                <td className="px-10 py-8 text-[11px] text-white/40 font-medium">{row.runner_up}</td>
-                                <td className="px-10 py-8 text-right">
+                                <td className="px-6 md:px-10 py-6 md:py-8 text-right font-mono text-xs">{row.votes.toLocaleString()}</td>
+                                <td className="px-6 md:px-10 py-6 md:py-8 text-[11px] text-white/40 font-medium">{row.runner_up}</td>
+                                <td className="px-6 md:px-10 py-6 md:py-8 text-right">
                                   <span className="text-sm font-black text-emerald-500">+{row.margin.toLocaleString()}</span>
                                 </td>
                               </tr>
