@@ -98,12 +98,12 @@ export function ComparePageContent() {
                <Zap className="w-3.5 h-3.5" /> Baseline Selection
             </div>
             {mode === 'year-vs-year' && (
-              <SelectBox value={yearA} onChange={setYearA} options={years.map(y => ({ label: `${y} Assembly`, value: y }))} icon={<Calendar />} />
+              <SelectBox value={yearA} onChange={(val: number) => { setYearA(val); setTimeout(handleCompare, 0); }} options={years.map(y => ({ label: `${y} Assembly`, value: y }))} icon={<Calendar />} />
             )}
             {mode === 'constituency-vs-constituency' && (
               <SearchableInput 
                 value={constA} 
-                onChange={setConstA} 
+                onChange={(val: string) => { setConstA(val); setTimeout(handleCompare, 0); }} 
                 placeholder="Search Constituency..." 
                 type="constituency"
                 icon={<MapPin />} 
@@ -112,7 +112,7 @@ export function ComparePageContent() {
             {mode === 'candidate-vs-candidate' && (
               <SearchableInput 
                 value={candA} 
-                onChange={setCandA} 
+                onChange={(val: string) => { setCandA(val); setTimeout(handleCompare, 0); }} 
                 placeholder="Search Candidate..." 
                 type="candidate"
                 icon={<User />} 
@@ -134,12 +134,12 @@ export function ComparePageContent() {
                <Zap className="w-3.5 h-3.5" /> Comparison Selection
             </div>
             {mode === 'year-vs-year' && (
-              <SelectBox value={yearB} onChange={setYearB} options={years.map(y => ({ label: `${y} Assembly`, value: y }))} icon={<Calendar />} />
+              <SelectBox value={yearB} onChange={(val: number) => { setYearB(val); setTimeout(handleCompare, 0); }} options={years.map(y => ({ label: `${y} Assembly`, value: y }))} icon={<Calendar />} />
             )}
             {mode === 'constituency-vs-constituency' && (
               <SearchableInput 
                 value={constB} 
-                onChange={setConstB} 
+                onChange={(val: string) => { setConstB(val); setTimeout(handleCompare, 0); }} 
                 placeholder="Search Constituency..." 
                 type="constituency"
                 icon={<MapPin />} 
@@ -148,7 +148,7 @@ export function ComparePageContent() {
             {mode === 'candidate-vs-candidate' && (
               <SearchableInput 
                 value={candB} 
-                onChange={setCandB} 
+                onChange={(val: string) => { setCandB(val); setTimeout(handleCompare, 0); }} 
                 placeholder="Search Candidate..." 
                 type="candidate"
                 icon={<User />} 
@@ -187,6 +187,90 @@ function ModeTab({ active, onClick, label }: any) {
     >
       {label}
     </button>
+  );
+}
+
+function SearchableInput({ value, onChange, placeholder, type, icon }: any) {
+  const [query, setQuery] = useState(value);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const handler = setTimeout(async () => {
+      if (query.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = type === 'constituency' 
+          ? await searchConstituencies(query)
+          : await searchCandidates(query);
+        
+        const data = res.data || res;
+        setSuggestions(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Search failed", err);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [query, type]);
+
+  return (
+    <div className="relative group">
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-500 transition-colors z-10">
+        {icon}
+      </div>
+      <input 
+        type="text"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setShow(true);
+        }}
+        onFocus={() => setShow(true)}
+        onBlur={() => setTimeout(() => setShow(false), 200)}
+        placeholder={placeholder}
+        className="w-full bg-white/[0.03] border border-white/10 rounded-[20px] pl-16 pr-6 py-5 text-xl font-black text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all relative z-0"
+      />
+      
+      {show && (suggestions.length > 0 || loading) && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-[#0D1117] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[100] max-h-60 overflow-y-auto">
+          {loading ? (
+             <div className="p-4 text-xs font-bold text-white/20 animate-pulse uppercase tracking-widest text-center">Searching Hub...</div>
+          ) : (
+            suggestions.map((s: any, i) => {
+              const displayName = typeof s === 'string' ? s : s.name;
+              const subText = typeof s === 'string' ? null : s.party;
+
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    setQuery(displayName);
+                    onChange(displayName);
+                    setShow(false);
+                  }}
+                  className="w-full text-left px-6 py-4 text-sm font-bold hover:bg-white/5 transition-colors border-b border-white/5 last:border-none"
+                >
+                  <div className="flex flex-col items-start gap-0.5">
+                    <span className="text-white/80 group-hover:text-white transition-colors">{displayName}</span>
+                    {subText && (
+                      <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{subText}</span>
+                    )}
+                  </div>
+                </button>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
